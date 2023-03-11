@@ -3,6 +3,8 @@
 
 #include "game.h"
 
-int processCommand();
+int process_command();
+int command_guess(long x, long y);
+int command_help();
 
 #endif

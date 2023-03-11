@@ -6,17 +6,20 @@
 #include "game.h"
 #include "commands.h"
 
-int mapWidth = 10;
+int mapWidth = 15;
 int mapHeight = 10;
 int playing = 1;
 int firstGuess = 1;
 
 int** map;
 
-int generateMap(int mapWidth, int mapHeight, int guessX, int guessY) {
+int generate_map(int mapWidth, int mapHeight, int guessX, int guessY) {
     srand(time(NULL));
+
+    // calculate number of mines to place
     int mines = mapWidth * mapHeight * 0.18;
-    printf("\n%d %d %d", mines, mapWidth, mapHeight);
+
+    // placing mines
     while (mines) {
         int tempx = rand() % mapWidth;
         int tempy = rand() % mapHeight;
@@ -28,7 +31,29 @@ int generateMap(int mapWidth, int mapHeight, int guessX, int guessY) {
     return 0;
 }
 
+int reveal_empty_cells(int x, int y, int counter) {
+    // detect if cell was revealed or is out of map
+    if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight || map[y][x] != 1) {
+        return 0;
+    }
+    map[y][x] = 0;
+    draw(mapWidth, mapHeight, map);
+
+    // test for all empty cells
+    reveal_empty_cells(x-1, y-1, counter + 1);
+    reveal_empty_cells(x-1, y, counter + 1);
+    reveal_empty_cells(x-1, y+1, counter + 1);
+    reveal_empty_cells(x, y-1, counter + 1);
+    reveal_empty_cells(x, y+1, counter + 1);
+    reveal_empty_cells(x+1, y-1, counter + 1);
+    reveal_empty_cells(x+1, y, counter + 1);
+    reveal_empty_cells(x+1, y+1, counter + 1);
+
+    return 0;
+}
+
 int run_game() {
+    // check if map size is not too small or big
     if (mapHeight < 2 || mapWidth < 2) {
         printf("\nMap size is too small.\nExiting...\n");
         return 1;
@@ -38,6 +63,7 @@ int run_game() {
         return 1;
     }
     
+    // initiation of map
     map = (int **)calloc(mapHeight, sizeof(int *));
     if (map == NULL) {
         printf("\nNot enough memory to allocate.\nExiting...\n");
@@ -47,11 +73,21 @@ int run_game() {
         map[i] = (int *)calloc(mapWidth, sizeof(int));
     }
 
-    while (playing) {
-        draw(mapWidth, mapHeight, map);
-        processCommand();
+    // set all numbers in map to 1 (unrevealed, without mines)
+    for (int i = 0; i < mapHeight; i++) {
+        for (int j = 0; j < mapWidth; j++) {
+            map[i][j] = 1;
+        }
     }
 
+    // main loop
+    while (playing) {
+        draw(mapWidth, mapHeight, map);
+        process_command();
+    }
+
+
+    // freeing map
     for (int i = 0; i < mapHeight; i++) {
         free(map[i]);
     }

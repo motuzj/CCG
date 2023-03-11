@@ -5,7 +5,7 @@
 
 
 
-int countMines(int** map, int x, int y, int mapWidth, int mapHeight) {
+int count_mines(int** map, int x, int y, int mapWidth, int mapHeight) {
     int minesCounter = 0;
 
     for (int k = x - 1; k <= x + 1; k++) {
@@ -25,7 +25,6 @@ int countMines(int** map, int x, int y, int mapWidth, int mapHeight) {
 }
 
 int draw(int mapWidth, int mapHeight, int** map) {
-    printf("\e[1;1H\e[2J");
     printf("        _                                                   \n  /\\/\\ (_)_ __   ___  _____      _____  ___ _ __   ___ _ __ \n /    \\| | '_ \\ / _ \\/ __\\ \\ /\\ / / _ \\/ _ \\ '_ \\ / _ \\ '__|\n/ /\\/\\ \\ | | | |  __/\\__ \\\\ V  V /  __/  __/ |_) |  __/ |   \n\\/    \\/_|_| |_|\\___||___/ \\_/\\_/ \\___|\\___| .__/ \\___|_|   \n                                           |_|              ");
     // x coords
     printf("\n    y\\x\t  ");
@@ -44,15 +43,15 @@ int draw(int mapWidth, int mapHeight, int** map) {
     }
     printf("┐\n");
 
-    int num = 0;  // y coords
+    int num = 0;  // numbers for y coords
 
-    // printing minesweeper numbers table
+    // printing minesweeper map/board
     for (int i = 0; i < mapHeight; i++) {
         printf("     %d\t│ ", num);
         for (int j = 0; j < mapWidth; j++) {
             switch (map[i][j]) {
                 case 0: {
-                    int counter = countMines(map, i, j, mapWidth, mapHeight);
+                    int counter = count_mines(map, i, j, mapWidth, mapHeight);
 
                     if (counter > 0) {
                         printf("%d ", counter);
@@ -92,6 +91,7 @@ int draw(int mapWidth, int mapHeight, int** map) {
         num++;
     }
 
+    // bottom of table
     printf("\n\t└");
     for (int i = 0; i < (mapWidth * 2 + 1); i++) {
         printf("─");
