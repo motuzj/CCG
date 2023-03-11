@@ -19,7 +19,7 @@ int processCommand() {
     char *inputCommand;
     char *inputX;
     char *inputY;
-    int x, y;
+    long x, y;
 
     printf("\n\ncommand: ");
 
@@ -33,6 +33,10 @@ int processCommand() {
     printf("\n'%s'\n", input);
 
     inputCommand = strtok(input, " ");  // get first input command
+    if (inputCommand == NULL) {
+        printf("Error. Please type command or type help to see help!");
+        return 1;
+    }
 
     int inputCommandLen = strlen(inputCommand);  // first input lenght
 
@@ -48,26 +52,34 @@ int processCommand() {
 
     inputX = strtok(NULL, " ");
     inputY = strtok(NULL, " ");
-    if (inputX == NULL && inputY == NULL) {
-        printf("Illegal command usage. Use help to show help.");
-        return 1;
-    } else if (isdigit(inputX) && isdigit(inputY)) {
-        x = atol(inputX);
-        y = atol(inputY);
-    } else {
+    if (inputX == NULL || inputY == NULL) {
         printf("Illegal command usage. Use help to show help.");
         return 1;
     }
+    char *endptr;
+    x = strtol(inputX, &endptr, 10);
+    if (*endptr != '\0') {
+        printf("Invalid input: %s\n", inputX);
+        return 1;
+    }
+    y = strtol(inputY, &endptr, 10);
+    if (*endptr != '\0') {
+        printf("Invalid input: %s\n", inputY);
+        return 1;
+    }
+
 
     if (x < 0 || y < 0 || x > mapWidth || y > mapWidth) {
-        printf("lol");
+        printf("Error: The provided coordinates are out of range.");
+        return 1;
     }
     printf("\n");
 
     // guess
     if ((inputCommandLen == 1 && strcmp(inputCommand, "g") == 0) || (inputCommandLen == 5 && strcmp(inputCommand, "guess") == 0)) {
         if (firstGuess) {
-            firstGuess == 0;
+            generateMap(mapWidth, mapHeight, y, x);
+            firstGuess = 0;
         }
 
         if (map[x][y] == 2 || map[x][y] == 4 || map[x][y] == 6 || map[x][y] == 7) {
