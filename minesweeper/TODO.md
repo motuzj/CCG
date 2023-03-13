@@ -1,14 +1,16 @@
 # TODO list
 ## Very important!!!
-- [ ] Solve weird coordinates problems (width, height, x, y)
+- [ ] solve weird coordinates problems (width, height, x, y)
+- [ ] reveal_empty_cells() not working correctly
+- [ ] sometimes the map generation is buggy
 
 ## Less important
-- [ ] Check if commands.c:52 is there useful (marked with TODO comment)
-- [ ] Help message
-- [ ] Death messages
+- [ ] check if commands.c:52 is there useful (marked with TODO comment)
+- [ ] help message
+- [ ] death messages
 
 ## Ideas
-- [ ] Delete whole command process and make new control system with keys and arrows
-- [ ] Add colors
-- [ ] Clear screen after every new draw and show message if there is any
-- [ ] Include `status` command
+- [ ] delete whole command process and make new control system with keys and arrows
+- [ ] add colors
+- [ ] clear screen after every new draw and show message if there is any
+- [ ] include `status` command
