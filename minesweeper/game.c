@@ -37,19 +37,37 @@ int reveal_empty_cells(int x, int y, int counter) {
         return 0;
     }
     map[y][x] = 0;
-    draw(mapWidth, mapHeight, map);
+
+    if (count_mines(map, x, y, mapWidth, mapHeight) > 0) {
+        return 0;
+    }
 
     // test for all empty cells
-    reveal_empty_cells(x-1, y-1, counter + 1);
     reveal_empty_cells(x-1, y, counter + 1);
-    reveal_empty_cells(x-1, y+1, counter + 1);
     reveal_empty_cells(x, y-1, counter + 1);
     reveal_empty_cells(x, y+1, counter + 1);
-    reveal_empty_cells(x+1, y-1, counter + 1);
     reveal_empty_cells(x+1, y, counter + 1);
-    reveal_empty_cells(x+1, y+1, counter + 1);
 
     return 0;
+}
+
+int count_mines(int** map, int x, int y, int mapWidth, int mapHeight) {
+    int minesCounter = 0;
+
+    for (int k = x - 1; k <= x + 1; k++) {
+        for (int l = y - 1; l <= y + 1; l++) {
+            // Skip out-of-bounds cells
+            if (k < 0 || k >= mapHeight || l < 0 || l >= mapWidth) {
+                continue;
+            }
+            // Check if the cell has a mine
+            if (map[k][l] == 2 || map[k][l] == 4 || map[k][l] == 6 || map[k][l] == 7) {
+                minesCounter++;
+            }
+        }
+    }
+
+    return minesCounter;
 }
 
 int run_game() {
