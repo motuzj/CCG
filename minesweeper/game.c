@@ -1,116 +1,135 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
+#include "commands.h"
 #include "draw.h"
 #include "game.h"
-#include "commands.h"
 
-int mapWidth = 15;
-int mapHeight = 10;
-int playing = 1;
-int firstGuess = 1;
+int w = 25;         // board width / max x coords
+int h = 15;         // board height / max y coords
+int playing = 1;    // 1 - playing ; 0 - game over
+int firstGuess = 1; // 1 - first game ; 0 - not first game
 
-int** map;
+int **board;
 
-int generate_map(int mapWidth, int mapHeight, int guessX, int guessY) {
-    srand(time(NULL));
+int generate_board(int guessX, int guessY, int w, int h) {
+  srand(time(NULL));
 
-    // calculate number of mines to place
-    int mines = mapWidth * mapHeight * 0.18;
+  // calculate number of mines to place
+  int mines = w * h * 0.1;
+  if (mines > (w * h)) {
+    mines = w * h - 9;
+  }
 
-    // placing mines
-    while (mines) {
-        int tempx = rand() % mapWidth;
-        int tempy = rand() % mapHeight;
-        if (map[tempy][tempx] != 2 && !(tempx == guessX && tempy == guessY)) {
-            map[tempy][tempx] = 2;
-            mines--;
+  // placing mines
+  while (mines) {
+    int tempx = rand() % w;
+    int tempy = rand() % h;
+
+    //checks if neighbor is guess
+    bool hasGuessNeighbor = false;
+    for (int i = tempx - 1; i <= tempx + 1 && i >= 0 && i < w; i++) {
+      for (int j = tempy - 1; j <= tempy + 1 && j >= 0 && j < h; j++) {
+        if (j == guessX && i == guessY) {
+            hasGuessNeighbor = true;
         }
+      }
     }
-    return 0;
+
+    if (board[tempy][tempx] != 2 && !(tempx == guessX && tempy == guessY) && !hasGuessNeighbor) {
+      board[tempy][tempx] = 2;
+      mines--;
+    }
+  }
+  return 0;
 }
 
-int reveal_empty_cells(int x, int y, int counter) {
-    // detect if cell was revealed or is out of map
-    if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight || map[y][x] != 1) {
-        return 0;
-    }
-    map[y][x] = 0;
-
-    if (count_mines(map, x, y, mapWidth, mapHeight) > 0) {
-        return 0;
-    }
-
-    // test for all empty cells
-    reveal_empty_cells(x-1, y, counter + 1);
-    reveal_empty_cells(x, y-1, counter + 1);
-    reveal_empty_cells(x, y+1, counter + 1);
-    reveal_empty_cells(x+1, y, counter + 1);
-
+int reveal_empty_cells(int x, int y) {
+  // detect if cell was revealed or is out of board
+  if (x < 0 || x >= w || y < 0 || y >= h || board[y][x] != 1) {
     return 0;
+  }
+  board[y][x] = 0;
+
+  if (count_mines(board, y, x, w, h) > 0) {
+    return 0;
+  }
+
+  // test for all empty cells
+
+  for (int i = x - 1; i <= x + 1; i++) {
+    for (int j = y - 1; j <= y + 1; j++) {
+      if (i == x && j == y)
+        continue;               // skip the current cell
+      reveal_empty_cells(i, j); // reveal the neighboring cell
+    }
+  }
+
+  return 0;
 }
 
-int count_mines(int** map, int x, int y, int mapWidth, int mapHeight) {
-    int minesCounter = 0;
+int count_mines(int **board, int x, int y, int w, int h) {
+  int minesCounter = 0;
 
-    for (int k = x - 1; k <= x + 1; k++) {
-        for (int l = y - 1; l <= y + 1; l++) {
-            // Skip out-of-bounds cells
-            if (k < 0 || k >= mapHeight || l < 0 || l >= mapWidth) {
-                continue;
-            }
-            // Check if the cell has a mine
-            if (map[k][l] == 2 || map[k][l] == 4 || map[k][l] == 6 || map[k][l] == 7) {
-                minesCounter++;
-            }
-        }
+  for (int k = x - 1; k <= x + 1; k++) {
+    for (int l = y - 1; l <= y + 1; l++) {
+      // Skip out-of-bounds cells
+      if (k < 0 || k >= h || l < 0 || l >= w) {
+        continue;
+      }
+      // Check if the cell has a mine
+      if (board[k][l] == 2 || board[k][l] == 4 || board[k][l] == 6 ||
+          board[k][l] == 7) {
+        minesCounter++;
+      }
     }
+  }
 
-    return minesCounter;
+  return minesCounter;
 }
 
 int run_game() {
-    // check if map size is not too small or big
-    if (mapHeight < 2 || mapWidth < 2) {
-        printf("\nMap size is too small.\nExiting...\n");
-        return 1;
-    }
-    if (mapHeight > 100 || mapWidth > 100) {
-        printf("\nMap size is too big.\nExiting...\n");
-        return 1;
-    }
-    
-    // initiation of map
-    map = (int **)calloc(mapHeight, sizeof(int *));
-    if (map == NULL) {
-        printf("\nNot enough memory to allocate.\nExiting...\n");
-        return 1;
-    }
-    for (int i = 0; i < mapHeight; i++) {
-        map[i] = (int *)calloc(mapWidth, sizeof(int));
-    }
+  // check if board size is not too small or big
+  if (h < 2 || w < 2) {
+    printf("\nMap size is too small.\nExiting...\n");
+    return 1;
+  }
+  if (h > 100 || w > 100) {
+    printf("\nMap size is too big.\nExiting...\n");
+    return 1;
+  }
 
-    // set all numbers in map to 1 (unrevealed, without mines)
-    for (int i = 0; i < mapHeight; i++) {
-        for (int j = 0; j < mapWidth; j++) {
-            map[i][j] = 1;
-        }
+  // initiation of board
+  board = (int **)calloc(h, sizeof(int *));
+  if (board == NULL) {
+    printf("\nNot enough memory to allocate.\nExiting...\n");
+    return 1;
+  }
+  for (int i = 0; i < h; i++) {
+    board[i] = (int *)calloc(w, sizeof(int));
+  }
+
+  // set all numbers in board to 1 (unrevealed, without mines)
+  for (int i = 0; i < h; i++) {
+    for (int j = 0; j < w; j++) {
+      board[i][j] = 1;
     }
+  }
 
-    // main loop
-    while (playing) {
-        draw(mapWidth, mapHeight, map);
-        process_command();
-    }
+  // main loop
+  while (playing) {
+    draw(w, h, board);
+    process_command();
+  }
 
+  // freeing board
+  for (int i = 0; i < h; i++) {
+    free(board[i]);
+  }
+  free(board);
 
-    // freeing map
-    for (int i = 0; i < mapHeight; i++) {
-        free(map[i]);
-    }
-    free(map);
-
-    printf("\n");
-    return 0;
+  printf("\n");
+  return 0;
 }

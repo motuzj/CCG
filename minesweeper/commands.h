@@ -5,6 +5,7 @@
 
 int process_command();
 int command_guess(long x, long y);
+int command_mark(long x, long y);
 int command_help();
 
 #endif

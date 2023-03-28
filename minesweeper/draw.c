@@ -5,11 +5,11 @@
 
 #include "game.h"
 
-int draw(int mapWidth, int mapHeight, int** map) {
-    printf("        _                                                   \n  /\\/\\ (_)_ __   ___  _____      _____  ___ _ __   ___ _ __ \n /    \\| | '_ \\ / _ \\/ __\\ \\ /\\ / / _ \\/ _ \\ '_ \\ / _ \\ '__|\n/ /\\/\\ \\ | | | |  __/\\__ \\\\ V  V /  __/  __/ |_) |  __/ |   \n\\/    \\/_|_| |_|\\___||___/ \\_/\\_/ \\___|\\___| .__/ \\___|_|   \n                                           |_|              ");
+int draw(int w, int h, int** board) {
+    printf("\n        _                                                   \n  /\\/\\ (_)_ __   ___  _____      _____  ___ _ __   ___ _ __ \n /    \\| | '_ \\ / _ \\/ __\\ \\ /\\ / / _ \\/ _ \\ '_ \\ / _ \\ '__|\n/ /\\/\\ \\ | | | |  __/\\__ \\\\ V  V /  __/  __/ |_) |  __/ |   \n\\/    \\/_|_| |_|\\___||___/ \\_/\\_/ \\___|\\___| .__/ \\___|_|   \n                                           |_|              ");
     // x coords
     printf("\n    y\\x\t  ");
-    for (int i = 0; i < mapWidth; i++) {
+    for (int i = 0; i < w; i++) {
         if (i >= 10) {
             printf("%d", i);
         } else {
@@ -19,52 +19,50 @@ int draw(int mapWidth, int mapHeight, int** map) {
 
     // drawing top table
     printf("\n\t┌");
-    for (int i = 0; i < (mapWidth * 2 + 1); i++) {
+    for (int i = 0; i < (w * 2 + 1); i++) {
         printf("─");
     }
     printf("┐\n");
 
     int num = 0;  // numbers for y coords
 
-    // printing minesweeper map/board
-    for (int i = 0; i < mapHeight; i++) {
+    // printing minesweeper board
+    for (int i = 0; i < h; i++) {
         printf("     %d\t│ ", num);
-        for (int j = 0; j < mapWidth; j++) {
-            switch (map[i][j]) {
+        for (int j = 0; j < w; j++) {
+            switch (board[i][j]) {
                 case 0: {
-                    int counter = count_mines(map, i, j, mapWidth, mapHeight);
+                    int counter = count_mines(board, i, j, w, h);
 
                     if (counter > 0) {
-                        printf("%d ", counter);
+                        printf("%d", counter);
                     } else {
-                        printf("  ");
+                        printf(" ");
                     }
                     break;
                 }
                 case 1:
                 case 2:
-                    printf("? ");
+                    printf("\033[100m\033[30m?\033[0m");
                     break;
                 case 3:
                 case 4:
-                    printf("X ");
+                    printf("\033[36mX\033[0m");
                     break;
                 case 5:
                 case 6:
-                    printf("! ");
+                    printf("!");
                     break;
                 case 7:
-                    printf("# ");
-                    break;
-                case 8:
-                    printf("& ");
+                    printf("#");
                     break;
                 default:
-                    printf("%d ", map[i][j]);
+                    printf("%d", board[i][j]);
                     break;
             }
+            printf(" ");
         }
-        if (i >= mapHeight - 1) {
+        if (i >= h - 1) {
             printf("│");
             break;
         }
@@ -74,7 +72,7 @@ int draw(int mapWidth, int mapHeight, int** map) {
 
     // bottom of table
     printf("\n\t└");
-    for (int i = 0; i < (mapWidth * 2 + 1); i++) {
+    for (int i = 0; i < (w * 2 + 1); i++) {
         printf("─");
     }
     printf("┘\n");

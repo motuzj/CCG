@@ -1,6 +1,6 @@
 #ifndef DRAW_H
 #define DRAW_H
 
-int draw(int mapWidth, int mapHeight, int **map);
+int draw(int w, int h, int **board);
 
 #endif

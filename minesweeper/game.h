@@ -1,11 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
 
-extern int** map;
+extern int** board;
 
-int generate_map(int mapWidth, int mapHeight, int guessX, int guessY);
-int reveal_empty_cells(int x, int y, int counter);
-int count_mines(int** map, int x, int y, int mapWidth, int mapHeight);
+int generate_board(int w, int h, int guessX, int guessY);
+int reveal_empty_cells(int x, int y);
+int count_mines(int** board, int x, int y, int w, int h);
 int run_game();
 
 #endif

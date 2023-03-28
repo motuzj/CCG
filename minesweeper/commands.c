@@ -7,12 +7,12 @@
 #include "game.h"
 #include "commands.h"
 
-extern int mapWidth;
-extern int mapHeight;
+extern int w;
+extern int h;
 extern int playing;
 extern int firstGuess;
 
-extern int** map;
+extern int** board;
 
 int process_command() {
     char input[15];
@@ -80,8 +80,8 @@ int process_command() {
         return 1;
     }
 
-    // check if x, y are out of map -> returns an error message
-    if (x < 0 || y < 0 || x > mapWidth || y > mapHeight) {
+    // check if x, y are out of board -> returns an error message
+    if (x < 0 || y < 0 || x > w || y > h) {
         printf("Error: The provided coordinates are out of range.");
         return 1;
     }
@@ -92,24 +92,49 @@ int process_command() {
         command_guess(x, y);
         return 0;
     }
+
+    if ((inputCommandLen == 1 && strcmp(inputCommand, "m") == 0) || (inputCommandLen == 4 && strcmp(inputCommand, "mark") == 0)) {
+        command_mark(x, y);
+        return 0;
+    }
     return 0;
 }
 
 int command_guess(long x, long y) {
-    // check if it's first guess and generate map
+    // check if it's first guess and generate board
     if (firstGuess) {
-        generate_map(mapWidth, mapHeight, y, x);
+        generate_board(y, x, w, h);
         firstGuess = 0;
     }
 
     // if it's mine -> game over
-    if (map[y][x] == 2 || map[y][x] == 4 || map[y][x] == 6 || map[y][x] == 7) {
+    if (board[y][x] == 2 || board[y][x] == 4 || board[y][x] == 6 || board[y][x] == 7) {
         printf("Game Over, LOSER!");
         playing = 0;
     } else { // else set to 0 and reveal neighborhood empty cells
-        reveal_empty_cells(x, y, 0); // function in game.c
+        reveal_empty_cells(x, y); // function in game.c
     }
 
+    return 0;
+}
+
+int command_mark(long x, long y) {
+    if (firstGuess) {
+        printf("Error: The game hasn't started yet! Please start the game with 'guess'! For further help, type 'help'.");
+        return 1;
+    }
+    if (board[y][x] == 2 || board[y][x] == 6) { // if it's mine
+        board[y][x] = 4;
+    } else if (board[y][x] == 1 || board[y][x] == 5) { // if it's not mine
+        board[y][x] = 3;
+    } else if (board[y][x] == 4) { // if if was marked mine
+        board[y][x] = 2;
+    } else if (board[y][x] == 3) { // if it wasn't marked mine
+        board[y][x] = 1;
+    } else {
+        printf("Please select non empty or valid cell!");
+        return 1;
+    }
     return 0;
 }
 
