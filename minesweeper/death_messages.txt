@@ -1,0 +1,18 @@
+"It was perfect. But, no, you just had to blow it up. You and your pride and your ego! You just had to be the man. If you'd done your job, known your place, we'd all be fine right now." --Mike Ehrmantraut
+"This is it. This is how it ends." --Mike Ehrmantraut
+You were blown to bits by a minefield.
+BOOM! Better luck next time...
+You hit a mine... Tip: You can always rm -rf this game.
+Segmentation fault: core dumped...and so are you!
+Sorry, no amount of grep could help you find that mine.
+Looks like you were caught in a fork bomb. Rest in peace, player.
+Whoops! That mine was actually a penguin disguised as a bomb. You should've seen it coming!
+Segmentation fault: You've just stepped on a mine.
+Looks like you forgot to defuse that one mine.
+The command 'rm -rf /mines' doesn't work in this game. Better luck next time, champ.
+You found a mine, but you forgot the sudo password to defuse it.
+Looks like the bomb was more explosive than systemd.
+Looks like you found the Linux equivalent of a blue screen of death.
+You exploded into a thousand little pieces like a shotgun blast.
+Your minesweeper run was shorter than a boot time in Linux.
+You found the mine, but not a medkit in time. Too bad!

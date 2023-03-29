@@ -12,7 +12,7 @@ The game uses a case-sensitive command processing system. To see the available c
 
 ### For Unix-based systems
 
-The easiest way to build the game is with `make`. To get started, follow the instructions [here](/README.md#building). Note that while the game has not been tested on macOS, it should work in theory.
+The easiest way to build the game is with `make`. To get started, follow the instructions [here](../README.md#building). Note that while the game has not been tested on macOS, it should work in theory.
 
 ### For Windows
 
@@ -24,7 +24,7 @@ While there is no guaranteed way to build the game on Windows, you can try using
 .\minesweeper.exe
 ```
 
-## [TODO](/minesweeper/TODO.md)
+## [TODO](./TODO.md)
 
 ## Help
 
