@@ -1,26 +1,25 @@
 CC = gcc
-CFLAGS = -Wall -g
+CFLAGS = -Wall -Wextra
 
-SRC_DIR = .
-BUILD_DIR = build
+SRCS = commands.c draw.c game.c main.c
 
-EXECUTABLE = minesweeper.o
+OBJS = $(addprefix build/, $(SRCS:.c=.o))
 
-SRC = $(wildcard $(SRC_DIR)/*.c)
-OBJ = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
+TARGET = minesweeper
 
-.PHONY: all clean run
+all: build_dir $(TARGET)
 
-all: $(EXECUTABLE)
-
-$(EXECUTABLE): $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
-
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+run: all
+	./$(TARGET)
 
 clean:
-	rm -rf $(BUILD_DIR)/*.o $(EXECUTABLE)
+	rm -rf build $(TARGET)
 
-run: $(EXECUTABLE)
-	./$(EXECUTABLE)
+build_dir:
+	mkdir -p build
+
+build/%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $^ -o $@

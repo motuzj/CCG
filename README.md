@@ -18,7 +18,6 @@ The building of any game probably will be pretty much the same:
 git clone https://github.com/motuzj/CCG.git
 cd CCG
 cd {game-name}
-mkdir build
 make
 ./{game-name}.o
 ```
