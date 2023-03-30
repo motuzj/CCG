@@ -5,7 +5,7 @@ SRCS = commands.c draw.c game.c main.c
 
 OBJS = $(addprefix build/, $(SRCS:.c=.o))
 
-TARGET = minesweeper
+TARGET = minesweeper.o
 
 all: build_dir $(TARGET)
 

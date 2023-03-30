@@ -9,6 +9,7 @@
 
 extern int w;
 extern int h;
+extern int mines;
 extern int playing;
 extern int firstGuess;
 
@@ -34,7 +35,6 @@ int process_command() {
 
     // remove \n newline character from `input`
     input[strcspn(input, "\n")] = 0;
-    //printf("\n'%s'\n", input);
 
     // get first input command
     inputCommand = strtok(input, " ");
@@ -56,6 +56,11 @@ int process_command() {
     // prints help message
     if ((inputCommandLen == 1 && strcmp(inputCommand, "h") == 0) || (inputCommandLen == 4 && strcmp(inputCommand, "help") == 0)) {
         command_help();
+        return 0;
+    }
+
+    if ((inputCommandLen == 1 && strcmp(inputCommand, "s") == 0) || (inputCommandLen == 4 && strcmp(inputCommand, "status") == 0)) {
+        command_status();
         return 0;
     }
 
@@ -81,7 +86,7 @@ int process_command() {
     }
 
     // check if x, y are out of board -> returns an error message
-    if (x < 0 || y < 0 || x > w || y > h) {
+    if (x < 0 || y < 0 || x > w - 1 || y > h - 1) {
         printf("Error: The provided coordinates are out of range.");
         return 1;
     }
@@ -123,13 +128,13 @@ int command_mark(long x, long y) {
         printf("Error: The game hasn't started yet! Please start the game with 'guess'! For further help, type 'help'.");
         return 1;
     }
-    if (board[y][x] == 2 || board[y][x] == 6) { // if it's mine
+    if (board[y][x] == 2 || board[y][x] == 6) { // if it's a mine
         board[y][x] = 4;
-    } else if (board[y][x] == 1 || board[y][x] == 5) { // if it's not mine
+    } else if (board[y][x] == 1 || board[y][x] == 5) { // if it's not a mine
         board[y][x] = 3;
-    } else if (board[y][x] == 4) { // if if was marked mine
+    } else if (board[y][x] == 4) { // if it was marked and it's a mine
         board[y][x] = 2;
-    } else if (board[y][x] == 3) { // if it wasn't marked mine
+    } else if (board[y][x] == 3) { // if it was marked and it's not a mine
         board[y][x] = 1;
     } else {
         printf("Please select non empty or valid cell!");
@@ -138,7 +143,12 @@ int command_mark(long x, long y) {
     return 0;
 }
 
+int command_status() {
+    printf("\nMines: %d/%d", mines, mines);
+    return 0;
+}
+
 int command_help() {
-    printf("\nUSAGE: <command> <x> <y>\n\nCOMMANDS:\n  guess <x> <y>\tReveals the cell at the specified coordinates.\n  mark <x> <y>\tMarks a cell at the specified coordinates as a potential mine.\n  unmark <x><y>\tUnmarks a cell at the specified coordinates as a mine.\n  restart or r\tStops a game and starts a new one.\n  quit or exit\tQuits the game.\n\nNOTES:\n  To use a command, simply type the command name followed by any required arguments. For example, to guess the cell at x (column) 3, y (row) 4, type \"guess 3 4\" and press enter.\n  Note that all commands are case sensitive.\n  You can also use one word abbreviations as: g (guess), m (mark)...\n");
+    printf("\nUSAGE: <command> <x> <y>\n\nCOMMANDS:\n  guess <x> <y>\tReveals the cell at the specified coordinates.\n  mark <x> <y>\tMarks a cell at the specified coordinates as a potential mine.\n  status\tView status of the game.\n  restart or r\tStops a game and starts a new one.\n  quit or exit\tQuits the game.\n\nNOTES:\n  To use a command, simply type the command name followed by any required arguments. For example, to guess the cell at x (column) 3, y (row) 4, type \"guess 3 4\" and press enter.\n  Note that all commands are case sensitive.\n  You can also use one word abbreviations as: g (guess), m (mark)...\n");
     return 0;
 }
