@@ -5,7 +5,7 @@
 
 #include "game.h"
 
-int draw(int w, int h, int** board) {
+int draw(int w, int h, Cell** board) {
     printf("\n        _                                                   \n  /\\/\\ (_)_ __   ___  _____      _____  ___ _ __   ___ _ __ \n /    \\| | '_ \\ / _ \\/ __\\ \\ /\\ / / _ \\/ _ \\ '_ \\ / _ \\ '__|\n/ /\\/\\ \\ | | | |  __/\\__ \\\\ V  V /  __/  __/ |_) |  __/ |   \n\\/    \\/_|_| |_|\\___||___/ \\_/\\_/ \\___|\\___| .__/ \\___|_|   \n                                           |_|              ");
     // x coords
     printf("\n    y\\x\t  ");
@@ -31,7 +31,7 @@ int draw(int w, int h, int** board) {
         printf("     %d\t│ ", num);
         for (int j = 0; j < w; j++) {
             switch (board[i][j]) {
-                case 0: {
+                case CELL_BLANK: {
                     int counter = count_mines(board, i, j, w, h);
 
                     if (counter > 0) {
@@ -41,23 +41,19 @@ int draw(int w, int h, int** board) {
                     }
                     break;
                 }
-                case 1:
-                case 2:
+                case CELL_BLANK_HIDDEN:
+                case CELL_MINE_HIDDEN:
                     printf("\033[100m\033[30m?\033[0m");
                     break;
-                case 3:
-                case 4:
+                case CELL_MARKED:
+                case CELL_MARKED_MINE:
                     printf("\033[36mX\033[0m");
                     break;
-                case 5:
-                case 6:
-                    printf("!");
-                    break;
-                case 7:
+                case CELL_MINE:
                     printf("#");
                     break;
                 default:
-                    printf("%d", board[i][j]);
+                    printf("?");
                     break;
             }
             printf(" ");

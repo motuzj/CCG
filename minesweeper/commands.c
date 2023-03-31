@@ -13,7 +13,7 @@ extern int mines;
 extern int playing;
 extern int firstGuess;
 
-extern int** board;
+extern Cell** board;
 
 int process_command() {
     char input[15];
@@ -113,7 +113,7 @@ int command_guess(long x, long y) {
     }
 
     // if it's mine -> game over
-    if (board[y][x] == 2 || board[y][x] == 4 || board[y][x] == 6 || board[y][x] == 7) {
+    if (board[y][x] == CELL_MINE || board[y][x] == CELL_MINE_HIDDEN || board[y][x] == CELL_MARKED_MINE) {
         printf("Game Over, LOSER!");
         playing = 0;
     } else { // else set to 0 and reveal neighborhood empty cells
@@ -128,14 +128,14 @@ int command_mark(long x, long y) {
         printf("Error: The game hasn't started yet! Please start the game with 'guess'! For further help, type 'help'.");
         return 1;
     }
-    if (board[y][x] == 2 || board[y][x] == 6) { // if it's a mine
-        board[y][x] = 4;
-    } else if (board[y][x] == 1 || board[y][x] == 5) { // if it's not a mine
-        board[y][x] = 3;
-    } else if (board[y][x] == 4) { // if it was marked and it's a mine
-        board[y][x] = 2;
-    } else if (board[y][x] == 3) { // if it was marked and it's not a mine
-        board[y][x] = 1;
+    if (board[y][x] == CELL_MINE || board[y][x] == CELL_MINE_HIDDEN) { // if it's a mine
+        board[y][x] = CELL_MARKED_MINE;
+    } else if (board[y][x] == CELL_BLANK_HIDDEN) { // if it's not a mine
+        board[y][x] = CELL_MARKED;
+    } else if (board[y][x] == CELL_MARKED_MINE) { // if it was marked and it's a mine
+        board[y][x] = CELL_BLANK_HIDDEN;
+    } else if (board[y][x] == CELL_MARKED) { // if it was marked and it's not a mine
+        board[y][x] = CELL_BLANK_HIDDEN;
     } else {
         printf("Please select non empty or valid cell!");
         return 1;

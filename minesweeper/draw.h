@@ -1,6 +1,7 @@
 #ifndef DRAW_H
 #define DRAW_H
 
-int draw(int w, int h, int **board);
+#include "game.h"
+int draw(int w, int h, Cell **board);
 
 #endif
