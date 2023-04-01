@@ -2,7 +2,7 @@
 
 # Minesweeper
 
-![screenshot01](https://user-images.githubusercontent.com/30744041/224798463-c7e78d9d-e6f0-4a79-9809-282612bcb56f.jpeg)
+![screenshot01](https://user-images.githubusercontent.com/30744041/229316560-4a941874-4b31-4b40-90bd-7ffecbf83c1d.jpg)
 
 ## Controls
 
@@ -26,9 +26,10 @@ USAGE: <command> <x> <y>
 COMMANDS:
   guess <x> <y> Reveals the cell at the specified coordinates.
   mark <x> <y>  Marks a cell at the specified coordinates as a potential mine.
-  unmark <x><y> Unmarks a cell at the specified coordinates as a mine.
+  status or s   View status of the game.
   restart or r  Stops a game and starts a new one.
   quit or exit  Quits the game.
+  help or h     Displays this message.
 
 NOTES:
   To use a command, simply type the command name followed by any required arguments. For example, to guess the cell at x (column) 3, y (row) 4, type "guess 3 4" and press enter.

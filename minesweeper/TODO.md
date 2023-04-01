@@ -1,5 +1,6 @@
 # TODO list
 ## Very important!!!
+- [ ] add restart add quit functions
 - [ ] make functions for testing
 - [ ] make decriptions for functions
 - [ ] devide large functions to smaller and seperate them to new file (`board.h`)
