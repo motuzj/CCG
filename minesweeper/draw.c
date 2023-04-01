@@ -6,7 +6,9 @@
 #include "game.h"
 
 int draw(int w, int h, Cell** board) {
-    printf("\n        _                                                   \n  /\\/\\ (_)_ __   ___  _____      _____  ___ _ __   ___ _ __ \n /    \\| | '_ \\ / _ \\/ __\\ \\ /\\ / / _ \\/ _ \\ '_ \\ / _ \\ '__|\n/ /\\/\\ \\ | | | |  __/\\__ \\\\ V  V /  __/  __/ |_) |  __/ |   \n\\/    \\/_|_| |_|\\___||___/ \\_/\\_/ \\___|\\___| .__/ \\___|_|   \n                                           |_|              ");
+    // minesweeper logo ascii
+    printf("        _                                                   \n  /\\/\\ (_)_ __   ___  _____      _____  ___ _ __   ___ _ __ \n /    \\| | '_ \\ / _ \\/ __\\ \\ /\\ / / _ \\/ _ \\ '_ \\ / _ \\ '__|\n/ /\\/\\ \\ | | | |  __/\\__ \\\\ V  V /  __/  __/ |_) |  __/ |   \n\\/    \\/_|_| |_|\\___||___/ \\_/\\_/ \\___|\\___| .__/ \\___|_|   \n                                           |_|              ");
+    
     // x coords
     printf("\n    y\\x\t  ");
     for (int i = 0; i < w; i++) {
@@ -42,19 +44,23 @@ int draw(int w, int h, Cell** board) {
                     break;
                 }
                 case CELL_BLANK_HIDDEN:
-                case CELL_MINE_HIDDEN:
+                case CELL_MINE_HIDDEN: {
                     printf("\033[100m\033[30m?\033[0m");
                     break;
+                }
                 case CELL_MARKED:
-                case CELL_MARKED_MINE:
+                case CELL_MARKED_MINE: {
                     printf("\033[36mX\033[0m");
                     break;
-                case CELL_MINE:
-                    printf("#");
+                }
+                case CELL_MINE: {
+                    printf("\033[31m#\033[0m");
                     break;
-                default:
+                }
+                default: {
                     printf("?");
                     break;
+                }
             }
             printf(" ");
         }
@@ -72,6 +78,9 @@ int draw(int w, int h, Cell** board) {
         printf("─");
     }
     printf("┘\n");
+
+    printf("%s", message); // print message
+    strcpy(message, " "); // clear message
 
     return 0;
 }

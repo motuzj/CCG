@@ -7,14 +7,6 @@
 #include "game.h"
 #include "commands.h"
 
-extern int w;
-extern int h;
-extern int mines;
-extern int playing;
-extern int firstGuess;
-
-extern Cell** board;
-
 int process_command() {
     char input[15];
     char *inputCommand;
@@ -29,7 +21,7 @@ int process_command() {
 
     //check if it's empty
     if (strcmp(input, "\n") == 0) {
-        printf("Please type command or type help to see help!");
+        strcpy(message, "Error: Please type command or type help to see help!");
         return 1;
     }
 
@@ -39,19 +31,12 @@ int process_command() {
     // get first input command
     inputCommand = strtok(input, " ");
     if (inputCommand == NULL) {
-        printf("Error. Please type command or type help to see help!");
+        strcpy(message, "Error: Please type command or type help to see help!");
         return 1;
     }
 
     // first command input length
     int inputCommandLen = strlen(inputCommand);
-
-    // TODO: remove from this, it seems like this is there for nothing
-    if (!strcmp(inputCommand, "\n")) {
-        //printf("Please type command or type help to see help!");
-        printf("THIS MESSAGE WORKS, PLEASE REMOVE THIS FROM TODO!!!");
-        return 0;
-    }
 
     // prints help message
     if ((inputCommandLen == 1 && strcmp(inputCommand, "h") == 0) || (inputCommandLen == 4 && strcmp(inputCommand, "help") == 0)) {
@@ -68,7 +53,7 @@ int process_command() {
     inputX = strtok(NULL, " ");
     inputY = strtok(NULL, " ");
     if (inputX == NULL || inputY == NULL) {
-        printf("Illegal command usage. Use help to show help.");
+        strcpy(message, "Error: Illegal command usage. Use help to show help.");
         return 1;
     }
 
@@ -76,18 +61,18 @@ int process_command() {
     char *endptr;
     x = strtol(inputX, &endptr, 10);
     if (*endptr != '\0') {
-        printf("Invalid input: %s\n", inputX);
+        sprintf(message, "Error: Invalid input: %s", inputX);
         return 1;
     }
     y = strtol(inputY, &endptr, 10);
     if (*endptr != '\0') {
-        printf("Invalid input: %s\n", inputY);
+        sprintf(message, "Error: Invalid input: %s", inputY);
         return 1;
     }
 
     // check if x, y are out of board -> returns an error message
     if (x < 0 || y < 0 || x > w - 1 || y > h - 1) {
-        printf("Error: The provided coordinates are out of range.");
+        strcpy(message, "Error: The provided coordinates are out of range.");
         return 1;
     }
     printf("\n");
@@ -114,8 +99,10 @@ int command_guess(long x, long y) {
 
     // if it's mine -> game over
     if (board[y][x] == CELL_MINE || board[y][x] == CELL_MINE_HIDDEN || board[y][x] == CELL_MARKED_MINE) {
-        printf("Game Over, LOSER!");
+        strcpy(message, "Game Over, LOSER!");
         playing = 0;
+    } else if (board[y][x] == CELL_BLANK) {
+        strcpy(message, "Error: The cell has already been revealed!");
     } else { // else set to 0 and reveal neighborhood empty cells
         reveal_empty_cells(x, y); // function in game.c
     }
@@ -125,7 +112,7 @@ int command_guess(long x, long y) {
 
 int command_mark(long x, long y) {
     if (firstGuess) {
-        printf("Error: The game hasn't started yet! Please start the game with 'guess'! For further help, type 'help'.");
+        strcpy(message, "Error: The game hasn't started yet! Please start the game with 'guess'! For further help, type 'help'.");
         return 1;
     }
     if (board[y][x] == CELL_MINE || board[y][x] == CELL_MINE_HIDDEN) { // if it's a mine
@@ -133,22 +120,24 @@ int command_mark(long x, long y) {
     } else if (board[y][x] == CELL_BLANK_HIDDEN) { // if it's not a mine
         board[y][x] = CELL_MARKED;
     } else if (board[y][x] == CELL_MARKED_MINE) { // if it was marked and it's a mine
-        board[y][x] = CELL_BLANK_HIDDEN;
+        board[y][x] = CELL_MINE_HIDDEN;
     } else if (board[y][x] == CELL_MARKED) { // if it was marked and it's not a mine
         board[y][x] = CELL_BLANK_HIDDEN;
     } else {
-        printf("Please select non empty or valid cell!");
+        strcpy(message, "Error: Please select non empty or valid cell!");
         return 1;
     }
     return 0;
 }
 
 int command_status() {
-    printf("\nMines: %d/%d", mines, mines);
+    sprintf(message, "Mines: %d/%d", mines, mines);
     return 0;
 }
 
 int command_help() {
-    printf("\nUSAGE: <command> <x> <y>\n\nCOMMANDS:\n  guess <x> <y>\tReveals the cell at the specified coordinates.\n  mark <x> <y>\tMarks a cell at the specified coordinates as a potential mine.\n  status\tView status of the game.\n  restart or r\tStops a game and starts a new one.\n  quit or exit\tQuits the game.\n\nNOTES:\n  To use a command, simply type the command name followed by any required arguments. For example, to guess the cell at x (column) 3, y (row) 4, type \"guess 3 4\" and press enter.\n  Note that all commands are case sensitive.\n  You can also use one word abbreviations as: g (guess), m (mark)...\n");
+    printf("\e[1;1H\e[2J"); // clear console
+    printf("USAGE: <command> <x> <y>\n\nCOMMANDS:\n  guess <x> <y>\tReveals the cell at the specified coordinates.\n  mark <x> <y>\tMarks a cell at the specified coordinates as a potential mine.\n  status or s\tView status of the game.\n  restart or r\tStops a game and starts a new one.\n  quit or exit\tQuits the game.\n  help or h\tDisplays this message.\n\nNOTES:\n  To use a command, simply type the command name followed by any required arguments. For example, to guess the cell at x (column) 3, y (row) 4, type \"guess 3 4\" and press enter.\n  Note that all commands are case sensitive.\n  You can also use one word abbreviations as: g (guess), m (mark)...\n\nPress [ENTER] to continue");
+    getchar();
     return 0;
 }

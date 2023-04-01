@@ -14,16 +14,6 @@ The game uses a case-sensitive command processing system. To see the available c
 
 The easiest way to build the game is with `make`. To get started, follow the instructions [here](../README.md#building). Note that while the game has not been tested on macOS, it should work in theory.
 
-### For Windows
-
-While there is no guaranteed way to build the game on Windows, you can try using the [TCC](https://bellard.org/tcc/) compiler. Keep in mind that proper UNICODE support may be lacking. To build and run the game, enter the following commands:
-
-
-```
-.\tcc.exe -o minesweeper.exe main.c gane.c commands.c draw.c
-.\minesweeper.exe
-```
-
 ## [TODO](./TODO.md)
 
 ## Help

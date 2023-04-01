@@ -13,8 +13,9 @@ int w = 15;                     // board width / max x coords
 int h = 15;                     // board height / max y coords
 double minesPercentage = 0.13;  // percentage of mines
 int mines;
-int playing = 1;                // 1 - playing ; 0 - game over
+bool playing = 1;               // 1 - playing ; 0 - game over
 int firstGuess = 1;             // 1 - first game ; 0 - not first game
+char message[120] = "";         // message that will be printed during draw()
 
 Cell **board;
 
@@ -23,7 +24,7 @@ int generate_board(int guessX, int guessY, int w, int h) {
 
   // check if minesPercentage is in valid format
   if (minesPercentage < 0.0 || minesPercentage > 1.0) {
-    printf("Warning: Percentage of mines is not valid percetage number, setting it to 13%%.");
+    printf("Warning: Percentage of mines is too big or small, setting it to 13%%.");
     minesPercentage = 0.13;
   }
 
@@ -49,6 +50,7 @@ int generate_board(int guessX, int guessY, int w, int h) {
       }
     }
 
+    // place a mine if it is not already there, or if it is not near the guess
     if (board[y][x] != CELL_MINE_HIDDEN && !(x == guessX && y == guessY) && !hasGuessNeighbor) {
       board[y][x] = CELL_MINE_HIDDEN;
       mines--;
@@ -64,6 +66,7 @@ int reveal_empty_cells(int x, int y) {
   }
   board[y][x] = 0;
 
+  // exits if there are mines nearby
   if (count_mines(board, y, x, w, h) > 0) {
     return 0;
   }
@@ -80,6 +83,29 @@ int reveal_empty_cells(int x, int y) {
   return 0;
 }
 
+int reveal_all_mines(Cell **board, int w, int h) {
+  for (int i = 0; i < h; i++) {
+    for (int j = 0; j < w; j++) {
+      switch (board[i][j]) {
+        case CELL_MINE_HIDDEN:
+        case CELL_MARKED_MINE: {
+          board[i][j] = CELL_MINE;
+          break;
+        }
+        case CELL_MARKED: {
+          board[i][j] = CELL_BLANK_HIDDEN;
+          break;
+        }
+        default: {
+          // nothing
+          break;
+        }
+      }
+    }
+  }
+  return 0;
+}
+
 int count_mines(Cell **board, int x, int y, int w, int h) {
   int minesCounter = 0;
 
@@ -90,12 +116,24 @@ int count_mines(Cell **board, int x, int y, int w, int h) {
         continue;
       }
       // Check if the cell has a mine
-      if (board[k][l] == CELL_MINE_HIDDEN || board[k][l] == CELL_MARKED_MINE) {
+      if (board[k][l] == CELL_MINE_HIDDEN || board[k][l] == CELL_MARKED_MINE || board[k][l] == CELL_MINE) {
         minesCounter++;
       }
     }
   }
   return minesCounter;
+}
+
+int count_cells_with_state(Cell **board, Cell state, int w, int h) {
+  int counter = 0;
+  for (int i = 0; i < h; i++) {
+    for (int j = 0; j < w; j++) {
+      if (board[i][j] == state) {
+        counter++;
+      }
+    }
+  }
+  return counter;
 }
 
 int set_board_size() {
@@ -107,7 +145,7 @@ int set_board_size() {
     // write stdin to input
     fgets(input, sizeof(input), stdin);
     // remove \n newline character from `input`
-    input[strcspn(input, " \n")] = 0;
+    input[strcspn(input, "\n")] = 0;
 
     // convert string to int
     w = strtol(input, &endptr, 10);
@@ -141,7 +179,7 @@ int initialize_board() {
   // initiation of board
   board = (Cell **)calloc(h, sizeof(Cell *));
   if (board == NULL) {
-    printf("\nNot enough memory to allocate.\nExiting...\n");
+    printf("\nError: Not enough memory to allocate.\nExiting...\n");
     return 1;
   }
   for (int i = 0; i < h; i++) {
@@ -149,7 +187,7 @@ int initialize_board() {
   }
   for (int i = 0; i < h; i++) {
     if (board[i] == NULL) {
-      printf("\nNot enough memory to allocate.\nExiting...\n");
+      printf("\nError: Not enough memory to allocate.\nExiting...\n");
       return 1;
     }
   }
@@ -160,39 +198,49 @@ int initialize_board() {
       board[i][j] = CELL_BLANK_HIDDEN;
     }
   }
+  printf("\e[1;1H\e[2J"); // clear console
   return 0;
 }
 
-
+int free_board(Cell **board, int h) {
+  // freeing board
+  for (int i = 0; i < h; i++) {
+    free(board[i]);
+  }
+  free(board);
+  printf("\n");
+  return 0;
+}
 
 int run_game() {
   initialize_board();
 
   // main loop
   while (playing) {
+    printf("\e[1;1H\e[2J"); // clear console
+
     draw(w, h, board);
     process_command();
-
-    // checks if there are any remaining mines
-    int markedMines = 0;
-    int hiddenCells = 0;
-    for (int i = 0; i < h; i++) {
-      for (int j = 0; j < w; j++) {
-        if (board[i][j] == CELL_MARKED_MINE) {
-          markedMines++;
-        }
-        if (board[i][j] == CELL_BLANK_HIDDEN) {
-          hiddenCells++;
-        }
+    
+    // skip if player hasn't guessed yet
+    if (!firstGuess) {
+      // player wins if all mines are checked and all empty cells revealed 
+      // or if there no marked empty cells and no unrevealed cells
+      int markedMines = count_cells_with_state(board, CELL_MARKED_MINE, w, h);
+      int hiddenCells = count_cells_with_state(board, CELL_BLANK_HIDDEN, w, h);
+      int markedCells = count_cells_with_state(board, CELL_MARKED, w, h);
+      mines = (int)w * h * minesPercentage;
+      if ((markedMines == mines && !hiddenCells) || (!markedCells && !hiddenCells)) {
+        playing = 0;
+        strcpy(message, "You've won!!");
       }
-    }
-    mines = (int) w * h * minesPercentage;
-    if (markedMines >= mines && !hiddenCells) {
-      playing = 0;
-      printf("You've won!!");
     }
 
     if (!playing) {
+      reveal_all_mines(board, w, h);
+      printf("\e[1;1H\e[2J"); // clear console
+      draw(w, h, board);
+
       char answer;
       printf("\nDo you want to play again? (Y/n) ");
       scanf("%c", &answer);
@@ -201,17 +249,13 @@ int run_game() {
         firstGuess = 1;
         initialize_board();
       } else if (answer == 'n' || answer == 'N') {
-        printf("Bye!\n");
+        printf("Bye!");
+      } else {
+        //TODO: Change this
+        printf("Error: Invalid respond, \nbye!");
       }
     }
   }
-
-  // freeing board
-  for (int i = 0; i < h; i++) {
-    free(board[i]);
-  }
-  free(board);
-
-  printf("\n");
+  free_board(board, h);
   return 0;
 }
