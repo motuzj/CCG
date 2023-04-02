@@ -7,6 +7,8 @@
 #include "game.h"
 #include "commands.h"
 
+#define CLEAR_SCREEN "\e[1;1H\e[2J"
+
 int process_command() {
     char input[15];
     char *inputCommand;
@@ -38,14 +40,27 @@ int process_command() {
     // first command input length
     int inputCommandLen = strlen(inputCommand);
 
-    // prints help message
-    if ((inputCommandLen == 1 && strcmp(inputCommand, "h") == 0) || (inputCommandLen == 4 && strcmp(inputCommand, "help") == 0)) {
-        command_help();
+    // prints status
+    if ((inputCommandLen == 1 && strcmp(inputCommand, "s") == 0) || (inputCommandLen == 6 && strcmp(inputCommand, "status") == 0)) {
+        command_status();
         return 0;
     }
 
-    if ((inputCommandLen == 1 && strcmp(inputCommand, "s") == 0) || (inputCommandLen == 4 && strcmp(inputCommand, "status") == 0)) {
-        command_status();
+    // check if command is `restart`
+    if ((inputCommandLen == 1 && strcmp(inputCommand, "r") == 0) || (inputCommandLen == 7 && strcmp(inputCommand, "restart") == 0)) {
+        command_restart();
+        return 0;
+    }
+
+    // check if command is `quit`
+    if ((inputCommandLen == 1 && strcmp(inputCommand, "q") == 0) || (inputCommandLen == 4 && strcmp(inputCommand, "quit") == 0)) {
+        command_quit();
+        return 0;
+    }
+
+    // prints help message
+    if ((inputCommandLen == 1 && strcmp(inputCommand, "h") == 0) || (inputCommandLen == 4 && strcmp(inputCommand, "help") == 0)) {
+        command_help();
         return 0;
     }
 
@@ -83,6 +98,7 @@ int process_command() {
         return 0;
     }
 
+    // check if command is `mark`
     if ((inputCommandLen == 1 && strcmp(inputCommand, "m") == 0) || (inputCommandLen == 4 && strcmp(inputCommand, "mark") == 0)) {
         command_mark(x, y);
         return 0;
@@ -100,7 +116,7 @@ int command_guess(long x, long y) {
     // if it's mine -> game over
     if (board[y][x] == CELL_MINE || board[y][x] == CELL_MINE_HIDDEN || board[y][x] == CELL_MARKED_MINE) {
         strcpy(message, "Game Over, LOSER!");
-        playing = 0;
+        gameState = NOT_PLAYING;
     } else if (board[y][x] == CELL_BLANK) {
         strcpy(message, "Error: The cell has already been revealed!");
     } else { // else set to 0 and reveal neighborhood empty cells
@@ -131,12 +147,22 @@ int command_mark(long x, long y) {
 }
 
 int command_status() {
-    sprintf(message, "Mines: %d/%d", mines, mines);
+    sprintf(message, "Mines: %d/%d", count_cells_with_state(board, CELL_MARKED_MINE, w, h) + count_cells_with_state(board, CELL_MARKED, w, h), mines);
+    return 0;
+}
+
+int command_restart() {
+    gameState = RESTART;
+    return 0;
+}
+
+int command_quit() {
+    gameState = QUIT;
     return 0;
 }
 
 int command_help() {
-    printf("\e[1;1H\e[2J"); // clear console
+    printf(CLEAR_SCREEN);
     printf("USAGE: <command> <x> <y>\n\nCOMMANDS:\n  guess <x> <y>\tReveals the cell at the specified coordinates.\n  mark <x> <y>\tMarks a cell at the specified coordinates as a potential mine.\n  status or s\tView status of the game.\n  restart or r\tStops a game and starts a new one.\n  quit or exit\tQuits the game.\n  help or h\tDisplays this message.\n\nNOTES:\n  To use a command, simply type the command name followed by any required arguments. For example, to guess the cell at x (column) 3, y (row) 4, type \"guess 3 4\" and press enter.\n  Note that all commands are case sensitive.\n  You can also use one word abbreviations as: g (guess), m (mark)...\n\nPress [ENTER] to continue");
     getchar();
     return 0;

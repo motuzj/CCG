@@ -19,6 +19,15 @@ typedef enum {
 
 extern Cell** board;
 
+typedef enum {
+  NOT_PLAYING=0,
+  PLAYING,
+  RESTART,
+  QUIT
+} State;
+
+extern State gameState;
+
 int generate_board(int guessX, int guessY, int w, int h);
 int reveal_empty_cells(int x, int y);
 int reveal_all_mines(Cell **board, int w, int h);

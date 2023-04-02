@@ -1,6 +1,6 @@
 # TODO list
 ## Very important!!!
-- [ ] add restart add quit functions
+- [ ] prevent insta-wins
 - [ ] make functions for testing
 - [ ] make decriptions for functions
 - [ ] devide large functions to smaller and seperate them to new file (`board.h`)
@@ -12,6 +12,4 @@
 - [ ] more comments, more, MORE!!!
 
 ## Ideas
-- [ ] delete whole command process and make new control system with keys and arrows
-- [ ] add colors
-- [ ] include `status` command
+- [ ] delete whole command process and make new control system with just keys and arrows

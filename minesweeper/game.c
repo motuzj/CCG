@@ -13,11 +13,14 @@ int w = 15;                     // board width / max x coords
 int h = 15;                     // board height / max y coords
 double minesPercentage = 0.13;  // percentage of mines
 int mines;
-bool playing = 1;               // 1 - playing ; 0 - game over
 int firstGuess = 1;             // 1 - first game ; 0 - not first game
 char message[120] = "";         // message that will be printed during draw()
 
 Cell **board;
+State gameState = PLAYING;
+
+#define CLEAR_SCREEN "\e[1;1H\e[2J"
+
 
 int generate_board(int guessX, int guessY, int w, int h) {
   srand(time(NULL));
@@ -198,7 +201,7 @@ int initialize_board() {
       board[i][j] = CELL_BLANK_HIDDEN;
     }
   }
-  printf("\e[1;1H\e[2J"); // clear console
+  printf(CLEAR_SCREEN);
   return 0;
 }
 
@@ -216,8 +219,8 @@ int run_game() {
   initialize_board();
 
   // main loop
-  while (playing) {
-    printf("\e[1;1H\e[2J"); // clear console
+  while (gameState == PLAYING) {
+    printf(CLEAR_SCREEN);
 
     draw(w, h, board);
     process_command();
@@ -230,23 +233,32 @@ int run_game() {
       int hiddenCells = count_cells_with_state(board, CELL_BLANK_HIDDEN, w, h);
       int markedCells = count_cells_with_state(board, CELL_MARKED, w, h);
       mines = (int)w * h * minesPercentage;
-      if ((markedMines == mines && !hiddenCells) || (!markedCells && !hiddenCells)) {
-        playing = 0;
+      if ((markedMines == mines && !hiddenCells && !markedCells) || (!markedCells && !hiddenCells)) {
+        gameState = NOT_PLAYING;
         strcpy(message, "You've won!!");
       }
     }
 
-    if (!playing) {
+    if (gameState != PLAYING) {
       reveal_all_mines(board, w, h);
-      printf("\e[1;1H\e[2J"); // clear console
+      printf(CLEAR_SCREEN);
       draw(w, h, board);
 
       char answer;
-      printf("\nDo you want to play again? (Y/n) ");
-      scanf("%c", &answer);
+      if (gameState == RESTART) {
+        answer = 'y';
+      } else if (gameState == QUIT) {
+        answer = 'n';
+      } else {
+        printf("\nDo you want to play again? (Y/n) ");
+        scanf("%c", &answer);
+        getchar(); // this is needed for catching "enter"
+      }
+      
       if (answer == 'y' || answer == 'Y' || answer == '\n') {
-        playing = 1;
+        gameState = PLAYING;
         firstGuess = 1;
+        free_board(board, h);
         initialize_board();
       } else if (answer == 'n' || answer == 'N') {
         printf("Bye!");
