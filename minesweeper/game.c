@@ -5,12 +5,14 @@
 #include <math.h>
 #include <time.h>
 
-#include "commands.h"
+#include "input.h"
 #include "draw.h"
 #include "game.h"
 
 int w = 15;                     // board width / max x coords
 int h = 15;                     // board height / max y coords
+int cursorX = 0;                // position of cursor x coords
+int cursorY = 0;                // position of cursor y coords
 double minesPercentage = 0.13;  // percentage of mines
 int mines;
 int firstGuess = 1;             // 1 - first game ; 0 - not first game
@@ -91,11 +93,11 @@ int reveal_all_mines(Cell **board, int w, int h) {
     for (int j = 0; j < w; j++) {
       switch (board[i][j]) {
         case CELL_MINE_HIDDEN:
-        case CELL_MARKED_MINE: {
+        case CELL_FLAGGED_MINE: {
           board[i][j] = CELL_MINE;
           break;
         }
-        case CELL_MARKED: {
+        case CELL_FLAGGED: {
           board[i][j] = CELL_BLANK_HIDDEN;
           break;
         }
@@ -119,7 +121,7 @@ int count_mines(Cell **board, int x, int y, int w, int h) {
         continue;
       }
       // Check if the cell has a mine
-      if (board[k][l] == CELL_MINE_HIDDEN || board[k][l] == CELL_MARKED_MINE || board[k][l] == CELL_MINE) {
+      if (board[k][l] == CELL_MINE_HIDDEN || board[k][l] == CELL_FLAGGED_MINE || board[k][l] == CELL_MINE) {
         minesCounter++;
       }
     }
@@ -152,8 +154,8 @@ int set_board_size() {
 
     // convert string to int
     w = strtol(input, &endptr, 10);
-    if (*endptr != '\0' || w < 2 || w > 99) {
-      printf("Make sure the size is valid number from 2 to 99!\n");
+    if (*endptr != '\0' || w < 5 || w > 99) {
+      printf("Make sure the size is valid number from 5 to 99!\n");
       continue;
     }
     break;
@@ -167,8 +169,8 @@ int set_board_size() {
 
     // convert string to int
     h = strtol(input, &endptr, 10);
-    if (*endptr != '\0' || h < 2 || h > 99) {
-      printf("Make sure the size is valid number from 2 to 99!\n");
+    if (*endptr != '\0' || h < 5 || h > 99) {
+      printf("Make sure the size is valid number from 5 to 99!\n");
       continue;
     }
     break;
@@ -223,17 +225,17 @@ int run_game() {
     printf(CLEAR_SCREEN);
 
     draw(w, h, board);
-    process_command();
+    process_input();
     
     // skip if player hasn't guessed yet
     if (!firstGuess) {
       // player wins if all mines are checked and all empty cells revealed 
-      // or if there no marked empty cells and no unrevealed cells
-      int markedMines = count_cells_with_state(board, CELL_MARKED_MINE, w, h);
+      // or if there no flagged empty cells and no unrevealed cells
+      int flaggedMines = count_cells_with_state(board, CELL_FLAGGED_MINE, w, h);
       int hiddenCells = count_cells_with_state(board, CELL_BLANK_HIDDEN, w, h);
-      int markedCells = count_cells_with_state(board, CELL_MARKED, w, h);
+      int flaggedCells = count_cells_with_state(board, CELL_FLAGGED, w, h);
       mines = (int)w * h * minesPercentage;
-      if ((markedMines == mines && !hiddenCells && !markedCells) || (!markedCells && !hiddenCells)) {
+      if ((flaggedMines == mines && !hiddenCells && !flaggedCells) || (!flaggedCells && !hiddenCells)) {
         gameState = NOT_PLAYING;
         strcpy(message, "You've won!!");
       }
@@ -252,7 +254,9 @@ int run_game() {
       } else {
         printf("\nDo you want to play again? (Y/n) ");
         scanf("%c", &answer);
-        getchar(); // this is needed for catching "enter"
+        if (answer != '\n') {
+          getchar(); // this is needed for catching "enter"
+        }
       }
       
       if (answer == 'y' || answer == 'Y' || answer == '\n') {

@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra
 
-SRCS = commands.c draw.c game.c main.c
+SRCS = input.c draw.c game.c main.c
 
 OBJS = $(addprefix build/, $(SRCS:.c=.o))
 

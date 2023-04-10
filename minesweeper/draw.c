@@ -5,33 +5,47 @@
 
 #include "game.h"
 
-int draw(int w, int h, Cell** board) {
-    // minesweeper logo ascii
-    printf("        _                                                   \n  /\\/\\ (_)_ __   ___  _____      _____  ___ _ __   ___ _ __ \n /    \\| | '_ \\ / _ \\/ __\\ \\ /\\ / / _ \\/ _ \\ '_ \\ / _ \\ '__|\n/ /\\/\\ \\ | | | |  __/\\__ \\\\ V  V /  __/  __/ |_) |  __/ |   \n\\/    \\/_|_| |_|\\___||___/ \\_/\\_/ \\___|\\___| .__/ \\___|_|   \n                                           |_|              ");
-    
-    // x coords
-    printf("\n    y\\x\t  ");
-    for (int i = 0; i < w; i++) {
-        if (i >= 10) {
-            printf("%d", i);
-        } else {
-            printf("%d ", i);
+// returns text for priniting it on side
+char* printMessage(int y) {
+    switch (y) {
+        case 0: {
+            return "M I N E S W E E P E R";
+            break;
+        }
+        case 1: {
+            return "---------------------";
+            break;
+        }
+        case 3: {
+            return "press ? for help";
+            break;
+        }
+        default: {
+            return "";
+            break;
         }
     }
+}
 
+int draw(int w, int h, Cell** board) {
     // drawing top table
-    printf("\n\t┌");
+    printf("┌");
     for (int i = 0; i < (w * 2 + 1); i++) {
         printf("─");
     }
-    printf("┐\n");
-
-    int num = 0;  // numbers for y coords
+    printf("┐\t\n");
 
     // printing minesweeper board
     for (int i = 0; i < h; i++) {
-        printf("     %d\t│ ", num);
+        printf("│ ");
         for (int j = 0; j < w; j++) {
+            if (i == cursorY && j == cursorX && (board[i][j] == CELL_BLANK_HIDDEN || board[i][j] == CELL_MINE_HIDDEN)) {
+                printf("\033[47m\033[30m");
+            } else if (board[i][j] == CELL_BLANK_HIDDEN || board[i][j] == CELL_MINE_HIDDEN) {
+                printf("\033[100m\033[30m");
+            } else if (i == cursorY && j == cursorX) {
+                printf("\033[100m");
+            }
             switch (board[i][j]) {
                 case CELL_BLANK: {
                     int counter = count_mines(board, i, j, w, h);
@@ -45,16 +59,16 @@ int draw(int w, int h, Cell** board) {
                 }
                 case CELL_BLANK_HIDDEN:
                 case CELL_MINE_HIDDEN: {
-                    printf("\033[100m\033[30m?\033[0m");
+                    printf("?");
                     break;
                 }
-                case CELL_MARKED:
-                case CELL_MARKED_MINE: {
-                    printf("\033[36mX\033[0m");
+                case CELL_FLAGGED:
+                case CELL_FLAGGED_MINE: {
+                    printf("\033[36mX");
                     break;
                 }
                 case CELL_MINE: {
-                    printf("\033[31m#\033[0m");
+                    printf("\033[91m#");
                     break;
                 }
                 default: {
@@ -62,24 +76,19 @@ int draw(int w, int h, Cell** board) {
                     break;
                 }
             }
-            printf(" ");
+            printf("\033[0m ");
         }
-        if (i >= h - 1) {
-            printf("│");
-            break;
-        }
-        printf("│\n");
-        num++;
+        printf("│  %s\n", printMessage(i));
     }
 
     // bottom of table
-    printf("\n\t└");
+    printf("└");
     for (int i = 0; i < (w * 2 + 1); i++) {
         printf("─");
     }
     printf("┘\n");
 
-    printf("%s", message); // print message
+    printf("%s\n", message); // print message
     strcpy(message, " "); // clear message
 
     return 0;

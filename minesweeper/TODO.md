@@ -9,4 +9,4 @@
 - [ ] more comments, more, MORE!!!
 
 ## Ideas
-- [ ] delete whole command process and make new control system with just keys and arrows
+- [ ] auto-reveal - "if all the mines around a numbered cell have been flagged, clicking on the numbered cell will automatically reveal all the surrounding cells that are not mines"

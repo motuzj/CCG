@@ -3,6 +3,8 @@
 
 extern int w;
 extern int h;
+extern int cursorX;
+extern int cursorY;
 extern int mines;
 extern bool playing;
 extern int firstGuess;
@@ -13,8 +15,8 @@ typedef enum {
   CELL_BLANK_HIDDEN,
   CELL_MINE,
   CELL_MINE_HIDDEN,
-  CELL_MARKED,
-  CELL_MARKED_MINE
+  CELL_FLAGGED,
+  CELL_FLAGGED_MINE
 } Cell;
 
 extern Cell** board;

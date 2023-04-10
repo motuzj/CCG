@@ -1,11 +1,12 @@
-#ifndef COMMANDS_H
-#define COMMANDS_H
+#ifndef INPUT_H
+#define INPUT_H
 
 #include "game.h"
 
-int process_command();
+int process_input();
+int getch();
 int command_guess(long x, long y);
-int command_mark(long x, long y);
+int command_flag(long x, long y);
 int command_status();
 int command_restart();
 int command_quit();
