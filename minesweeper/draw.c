@@ -6,7 +6,7 @@
 #include "game.h"
 
 // returns text for priniting it on side
-char* printMessage(int y) {
+char *printMessage(int y) {
     switch (y) {
         case 0: {
             return "M I N E S W E E P E R";
@@ -16,7 +16,15 @@ char* printMessage(int y) {
             return "---------------------";
             break;
         }
+        case 2: {
+            return "[SPACE] reveal a cell";
+            break;
+        }
         case 3: {
+            return "f       flag a mine";
+            break;
+        }
+        case 4: {
             return "press ? for help";
             break;
         }
@@ -27,7 +35,7 @@ char* printMessage(int y) {
     }
 }
 
-int draw(int w, int h, Cell** board) {
+int draw(int w, int h, Cell **board) {
     // drawing top table
     printf("┌");
     for (int i = 0; i < (w * 2 + 1); i++) {
@@ -89,7 +97,7 @@ int draw(int w, int h, Cell** board) {
     printf("┘\n");
 
     printf("%s\n", message); // print message
-    strcpy(message, " "); // clear message
+    strcpy(message, " ");    // clear message
 
     return 0;
 }

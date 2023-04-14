@@ -19,7 +19,7 @@ git clone https://github.com/motuzj/CCG.git
 cd CCG
 cd {game-name}
 make
-./{game-name}.o
+./{game-name}
 ```
 
 or you can use `make run` to build and run the game and `make clean` to remove the build files.  

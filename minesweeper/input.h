@@ -1,7 +1,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include "game.h"
+#include "main.h"
 
 int process_input();
 int getch();

@@ -6,6 +6,8 @@
 
 Use arrow keys to move the cursor around the game board. Press `g` to guess and `f` to flag a mine. To see all the available controls, press `?` or `h`.
 
+You can use options `-w` and `-h` for setting size of game board.
+
 ## Building
 
 ### For Unix-based systems

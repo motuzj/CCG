@@ -102,7 +102,7 @@ int command_guess(long x, long y) {
         gameState = NOT_PLAYING;
     } else if (board[y][x] == CELL_BLANK) {
         strcpy(message, "Error: The cell has already been revealed!");
-    } else { // else set to 0 and reveal neighborhood empty cells
+    } else {                      // else set to 0 and reveal neighborhood empty cells
         reveal_empty_cells(x, y); // function in game.c
     }
 
