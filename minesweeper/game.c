@@ -32,13 +32,13 @@ int generate_board(int guessX, int guessY, int w, int h) {
 
     // placing mines
     while (mines) {
-        int x = rand() % w;
-        int y = rand() % h;
+        int potencial_x = rand() % w;
+        int potencial_y = rand() % h;
 
         // checks if neighbor is guess
         bool hasGuessNeighbor = false;
-        for (int i = x - 1; i <= x + 1 && i >= 0 && i < w; i++) {
-            for (int j = y - 1; j <= y + 1 && j >= 0 && j < h; j++) {
+        for (int i = potencial_x - 1; i <= potencial_x + 1; i++) {
+            for (int j = potencial_y - 1; j <= potencial_y + 1; j++) {
                 if (j == guessX && i == guessY) {
                     hasGuessNeighbor = true;
                 }
@@ -46,8 +46,8 @@ int generate_board(int guessX, int guessY, int w, int h) {
         }
 
         // place a mine if it is not already there, or if it is not near the guess
-        if (board[y][x] != CELL_MINE_HIDDEN && !(x == guessX && y == guessY) && !hasGuessNeighbor) {
-            board[y][x] = CELL_MINE_HIDDEN;
+        if (board[potencial_y][potencial_x] != CELL_MINE_HIDDEN && !(potencial_x == guessX && potencial_y == guessY) && !hasGuessNeighbor) {
+            board[potencial_y][potencial_x] = CELL_MINE_HIDDEN;
             mines--;
         }
     }
@@ -132,13 +132,16 @@ int count_cells_with_state(Cell **board, Cell state, int w, int h) {
 }
 
 int set_board_size() {
-    char input[10];
+    char input[10] = "";
     char *endptr;
 
     while (w < 5 || w > 99) {
         printf("Width: ");
-        // write stdin to input
-        fgets(input, sizeof(input), stdin);
+        // write stdin to input and check if it is null
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("Error: There was some problem reading stdin, try it again!\n");
+            continue;
+        }
         // remove \n newline character from `input`
         input[strcspn(input, "\n")] = 0;
 
@@ -152,8 +155,11 @@ int set_board_size() {
     }
     while (h < 5 || h > 99) {
         printf("Height: ");
-        // write stdin to input
-        fgets(input, sizeof(input), stdin);
+        // write stdin to input and check if it is null
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("Error: There was some problem reading stdin, try it again!\n");
+            continue;
+        }
         // remove \n newline character from `input`
         input[strcspn(input, "\n")] = 0;
 
@@ -231,7 +237,7 @@ int run_game() {
             }
         }
 
-        if (gameState != PLAYING) {
+        if (gameState != PLAYING) { // game ended
             reveal_all_mines(board, w, h);
             printf(CLEAR_SCREEN);
             draw(w, h, board);
@@ -242,25 +248,27 @@ int run_game() {
             } else if (gameState == QUIT) {
                 answer = 'n';
             } else {
-                printf("\nDo you want to play again? (Y/n) ");
+                printf("\nDo you want to play again? (y/N) ");
                 scanf("%c", &answer);
                 if (answer != '\n') {
                     getchar(); // this is needed for catching "enter"
                 }
             }
 
-            if (answer == 'y' || answer == 'Y' || answer == '\n') {
+            if (answer == 'y' || answer == 'Y') {
                 w = 0; // reset width
                 h = 0; // reset height
+
+                // reset cursor
+                cursorX = 0;
+                cursorY = 0;
+
                 gameState = PLAYING;
                 firstGuess = 1;
                 free_board(board, h);
                 initialize_board();
-            } else if (answer == 'n' || answer == 'N') {
-                printf("Bye!");
             } else {
-                // TODO: Change this
-                printf("Error: Invalid respond, \nbye!");
+                printf("Bye!");
             }
         }
     }

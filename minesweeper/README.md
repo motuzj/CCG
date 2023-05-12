@@ -14,8 +14,6 @@ You can use options `-w` and `-h` for setting size of game board.
 
 The easiest way to build the game is with `make`. To get started, follow the instructions [here](../README.md#building). Note that while the game has not been tested on macOS, it should work in theory.
 
-## [TODO](./TODO.md)
-
 ## Help
 
 You can press `?` to show message like this:
@@ -24,7 +22,7 @@ You can press `?` to show message like this:
 CONTROLS:
   Arrow keys            Move the cursor around
   Space, Enter, g       Reveal a cell
-  f                     Flag a cell as mine
+  f, m                  Flag a cell as mine
   s                     View status of the game
   r                     Stops a game and starts a new one
   q                     Quits the game

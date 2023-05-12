@@ -9,72 +9,6 @@
 
 #define CLEAR_SCREEN "\e[1;1H\e[2J"
 
-int process_input() {
-    char input = getch();
-    // sprintf(message, "input is: %c", input);
-
-    switch (input) {
-        case 'A': { // up
-            cursorY--;
-            break;
-        }
-        case 'B': { // down
-            cursorY++;
-            break;
-        }
-        case 'C': { // right
-            cursorX++;
-            break;
-        }
-        case 'D': { // left
-            cursorX--;
-            break;
-        }
-        case '\n':
-        case ' ':
-        case 'g': {
-            command_guess(cursorX, cursorY);
-            break;
-        }
-        case 'f':
-        case 'm': {
-            command_flag(cursorX, cursorY);
-            break;
-        }
-        case 's': {
-            command_status();
-            break;
-        }
-        case 'r': {
-            command_restart();
-            break;
-        }
-        case 'q': {
-            command_quit();
-            break;
-        }
-        case '?':
-        case 'h': {
-            command_help();
-            break;
-        }
-    }
-
-    // set cursor in bounds
-    if (cursorX < 0) {
-        cursorX = w - 1;
-    } else if (cursorX > w - 1) {
-        cursorX = 0;
-    }
-    if (cursorY < 0) {
-        cursorY = h - 1;
-    } else if (cursorY > h - 1) {
-        cursorY = 0;
-    }
-
-    return 0;
-}
-
 // get one char; from this: https://stackoverflow.com/a/7469410
 int getch() {
     static struct termios old, current;
@@ -146,7 +80,73 @@ int command_quit() {
 
 int command_help() {
     printf(CLEAR_SCREEN);
-    printf("CONTROLS:\n  Arrow keys\t\tMove the cursor around\n  Space, Enter, g\tReveal a cell\n  f\t\t\tFlag a cell as mine\n  s\t\t\tView status of the game\n  r\t\t\tStops a game and starts a new one\n  q\t\t\tQuits the game\n  h, ?\t\t\tDisplays this message\n\nPress [ENTER] to continue");
+    printf("CONTROLS:\n  Arrow keys\t\tMove the cursor around\n  Space, Enter, g\tReveal a cell\n  f, m\t\t\tFlag a cell as mine\n  s\t\t\tView status of the game\n  r\t\t\tStops a game and starts a new one\n  q\t\t\tQuits the game\n  h, ?\t\t\tDisplays this message\n\nPress [ENTER] to continue");
     getch();
+    return 0;
+}
+
+int process_input() {
+    char input = getch();
+    // sprintf(message, "input is: %c", input);
+
+    switch (input) {
+        case 'A': { // up
+            cursorY--;
+            break;
+        }
+        case 'B': { // down
+            cursorY++;
+            break;
+        }
+        case 'C': { // right
+            cursorX++;
+            break;
+        }
+        case 'D': { // left
+            cursorX--;
+            break;
+        }
+        case '\n':
+        case ' ':
+        case 'g': {
+            command_guess(cursorX, cursorY);
+            break;
+        }
+        case 'f':
+        case 'm': {
+            command_flag(cursorX, cursorY);
+            break;
+        }
+        case 's': {
+            command_status();
+            break;
+        }
+        case 'r': {
+            command_restart();
+            break;
+        }
+        case 'q': {
+            command_quit();
+            break;
+        }
+        case '?':
+        case 'h': {
+            command_help();
+            break;
+        }
+    }
+
+    // set cursor in bounds
+    if (cursorX < 0) {
+        cursorX = w - 1;
+    } else if (cursorX > w - 1) {
+        cursorX = 0;
+    }
+    if (cursorY < 0) {
+        cursorY = h - 1;
+    } else if (cursorY > h - 1) {
+        cursorY = 0;
+    }
+
     return 0;
 }
