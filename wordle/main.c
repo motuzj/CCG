@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
-//
+// BUG:
 // SOME LETTERS HAVE WRONG COLOR
-//
+// RIGHT WORD: APPLE
+// GUESS WORD: ALPLE
+//              ^
+//  This letter shouldn't be highlighted, but it is nonetheless
 
 #define WORD_LENGTH 5
 
