@@ -1,6 +1,7 @@
 # CCG
+![Logo](./assets/logo.png)
 
-This is my collection of CLI C Games. Currently only [minesweeper](./minesweeper/README.md) game is available. 
+This is my collection of **CLI C Games**. Currently only [minesweeper](./minesweeper/README.md) game is available. 
 
 ## Building
 
@@ -23,4 +24,4 @@ make
 ```
 
 or you can use `make run` to build and run the game and `make clean` to remove the build files.  
-You can also build games using `clang`, just change the first line in the`Makefile` to `CC = clang`.
+You can also build games using `clang`, just change the first line in the `Makefile` to `CC = clang`.
