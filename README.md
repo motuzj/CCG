@@ -1,6 +1,6 @@
 # CCG
 
-This is my collection of CLI C Games. Currently only [minesweeper](./minesweeper/README.md) game is available. 
+This is my collection of CLI C Games. Currently [minesweeper](./minesweeper/README.md) and [wordle](./wordle/README.md) games are available. 
 
 ## Building
 
