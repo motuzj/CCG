@@ -1,4 +1,4 @@
-# CODE FROM: https://github.com/github/gitignore/blob/main/C.gitignore
+# TEMPLATE FROM: https://github.com/github/gitignore/blob/main/C.gitignore
 
 # Prerequisites
 *.d
@@ -60,3 +60,4 @@ dkms.conf
 *.tar
 *temp*
 minesweeper/minesweeper
+wordle/wordle
