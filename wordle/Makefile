@@ -1,7 +1,7 @@
 NAME=wordle
 
 main:
-	gcc -o $(NAME) ./src/*.c
+	cc -o $(NAME) ./src/*.c
 
 run: main
 	./$(NAME)

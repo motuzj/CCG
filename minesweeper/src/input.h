@@ -1,8 +1,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include "main.h"
-
+int command_guess(long x, long y);
 int process_input();
 
 #endif

@@ -5,7 +5,7 @@ This is my collection of **CLI C Games**. Currently [minesweeper](./minesweeper/
 
 ## Building
 
-You can compile it with `make` and `gcc`, so make sure you have them installed on your system before building it.
+You can compile it with `make` and c compiler (tested on GCC and clang), so make sure you have them installed on your system before building it.
 
 For example, on Debian/Ubuntu based systems you can install them using:
 
@@ -23,5 +23,4 @@ make
 ./{game-name}
 ```
 
-or you can use `make run` to build and run the game and `make clean` to remove the build files.  
-You can also build games using `clang`, just change the first line in the `Makefile` to `CC = clang`.
+or you can use `make run` to build and run immediately.

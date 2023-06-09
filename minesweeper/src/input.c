@@ -6,6 +6,7 @@
 
 #include "game.h"
 #include "input.h"
+#include "main.h"
 
 #define CLEAR_SCREEN "\e[1;1H\e[2J"
 
@@ -27,6 +28,8 @@ int command_guess(long x, long y) {
     // check if it's first guess and generate board
     if (firstGuess) {
         generate_board(y, x, w, h);
+        first_cursorX = x;
+        first_cursorY = y;
         firstGuess = 0;
     }
 
@@ -64,7 +67,7 @@ int command_flag(long x, long y) {
 }
 
 int command_status() {
-    sprintf(message, "Mines: %d/%d", count_cells_with_state(board, CELL_FLAGGED_MINE, w, h) + count_cells_with_state(board, CELL_FLAGGED, w, h), mines);
+    sprintf(message, "Mines: %d/%d\nSeed: %dx%dn%dc%dx%d#%X", count_cells_with_state(board, CELL_FLAGGED_MINE, w, h) + count_cells_with_state(board, CELL_FLAGGED, w, h), mines, w, h, mines, first_cursorX, first_cursorY, seed);
     return 0;
 }
 
@@ -80,7 +83,7 @@ int command_quit() {
 
 int command_help() {
     printf(CLEAR_SCREEN);
-    printf("CONTROLS:\n  Arrow keys\t\tMove the cursor around\n  Space, Enter, g\tReveal a cell\n  f, m\t\t\tFlag a cell as mine\n  s\t\t\tView status of the game\n  r\t\t\tStops a game and starts a new one\n  q\t\t\tQuits the game\n  h, ?\t\t\tDisplays this message\n\nPress [ENTER] to continue");
+    printf("CONTROLS:\n  Arrow keys\t\tMove the cursor around\n  Space, Enter, g\tReveal a cell\n  f, m\t\t\tFlag a cell as mine\n  s\t\t\tView status of the game and game seed\n  r\t\t\tStops a game and starts a new one\n  q\t\t\tQuits the game\n  h, ?\t\t\tDisplays this message\n\nPress [ENTER] to continue");
     getch();
     return 0;
 }

@@ -1,21 +1,40 @@
+#include <math.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <math.h>
 #include <time.h>
 
-#include "input.h"
 #include "draw.h"
 #include "game.h"
+#include "input.h"
 #include "main.h"
 
 double minesPercentage = 0.13; // percentage of mines
 
 #define CLEAR_SCREEN "\e[1;1H\e[2J"
 
+// set seed from from arguments
+int arg_set_seed(char arg[]) {
+    // 10x10n13c#64821415
+    sscanf(arg, "%dx%dn%dc%dx%d#", &w, &h, &mines, &cursorX, &cursorY);
+    const char *hexSeed = strchr(arg, '#');
+    if (hexSeed == NULL) {
+        printf("Invalid string format. Hexadecimal number not found.\n");
+        return 1;
+    }
+    hexSeed++; // Move past the "#"
+
+    seed = strtol(hexSeed, NULL, 16);
+    return 0;
+}
+
 int generate_board(int guessX, int guessY, int w, int h) {
-    srand(time(NULL));
+    int temp_mines = mines;
+    if (!seed) {
+        seed = (unsigned int)time(NULL);
+    }
+    srand(seed);
 
     // check if minesPercentage is in valid format
     if (minesPercentage < 0.0 || minesPercentage > 1.0) {
@@ -23,15 +42,8 @@ int generate_board(int guessX, int guessY, int w, int h) {
         minesPercentage = 0.13;
     }
 
-    // calculate number of mines to place
-    mines = (int)w * h * minesPercentage;
-
-    if (mines > (w * h)) {
-        mines = w * h - 9;
-    }
-
     // placing mines
-    while (mines) {
+    while (temp_mines) {
         int potencial_x = rand() % w;
         int potencial_y = rand() % h;
 
@@ -48,7 +60,7 @@ int generate_board(int guessX, int guessY, int w, int h) {
         // place a mine if it is not already there, or if it is not near the guess
         if (board[potencial_y][potencial_x] != CELL_MINE_HIDDEN && !(potencial_x == guessX && potencial_y == guessY) && !hasGuessNeighbor) {
             board[potencial_y][potencial_x] = CELL_MINE_HIDDEN;
-            mines--;
+            temp_mines--;
         }
     }
     return 0;
@@ -171,6 +183,14 @@ int set_board_size() {
         }
         break;
     }
+    if (!mines) {
+        // calculate number of mines to place
+        mines = (int)w * h * minesPercentage;
+
+        if (mines > (w * h)) {
+            mines = w * h - 9;
+        }
+    }
     return 0;
 }
 
@@ -215,6 +235,10 @@ int free_board(Cell **board, int h) {
 
 int run_game() {
     initialize_board();
+
+    if (custom_seed) {
+        command_guess(cursorX, cursorY);
+    }
 
     // main loop
     while (gameState == PLAYING) {
@@ -262,6 +286,8 @@ int run_game() {
                 // reset cursor
                 cursorX = 0;
                 cursorY = 0;
+
+                seed = 0; // reset seed
 
                 gameState = PLAYING;
                 firstGuess = 1;

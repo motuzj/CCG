@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "game.h"
+#include "main.h"
 
 // returns text for priniting it on side
 char *printMessage(int y) {
@@ -86,7 +87,7 @@ int draw(int w, int h, Cell **board) {
             }
             printf("\033[0m ");
         }
-        printf("│  %s\n", printMessage(i));
+        printf("│  %s\n", (!minimal ? printMessage(i) : "")); // prints '|' with message only if minimal is false else only '|'
     }
 
     // bottom of table
@@ -96,8 +97,10 @@ int draw(int w, int h, Cell **board) {
     }
     printf("┘\n");
 
-    printf("%s\n", message); // print message
-    strcpy(message, " ");    // clear message
+    if (!minimal) {
+        printf("%s\n", message); // print message
+    }
+    strcpy(message, " "); // clear message
 
     return 0;
 }

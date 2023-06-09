@@ -1,25 +1,7 @@
-CC = gcc
-CFLAGS = -Wall -Wextra
+NAME=minesweeper
 
-SRCS = input.c draw.c game.c main.c
+main:
+	cc -o $(NAME) ./src/*.c
 
-OBJS = $(addprefix build/, $(SRCS:.c=.o))
-
-TARGET = minesweeper
-
-all: build_dir $(TARGET)
-
-run: all
-	./$(TARGET)
-
-clean:
-	rm -rf build $(TARGET)
-
-build_dir:
-	mkdir -p build
-
-build/%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@
+run: main
+	./$(NAME)

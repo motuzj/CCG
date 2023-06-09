@@ -17,7 +17,7 @@ Read more on [Wikipedia](https://en.wikipedia.org/wiki/Wordle).
 
 ## Dictionaries
 
-The game uses a dictionary file to validate the words entered by the player. By default, the game uses the "dict/english.txt" file as the dictionary. You can specify a different dictionary file using the -d option.
+The game uses a dictionary file to validate the words entered by the player. By default, the game uses the "dict/english.txt" file as the dictionary. You can specify a different dictionary file using the `-d` option.
 
 ## Building
 
