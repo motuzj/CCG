@@ -1,6 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define BOARD_SIZE 4
+extern unsigned long score;
 
 #endif

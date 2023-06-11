@@ -4,27 +4,17 @@
 #include "draw.h"
 #include "main.h"
 
-int repeat_char(int ch, size_t side_size) {
-    printf("│");
-    for (size_t i = 0; i < side_size * 5; i++) {
-        printf("%c", ch);
-    }
-    printf("│\n");
-    return 0;
-}
+int draw(int **board, int side_size) {
+    int n = 0;
 
-int draw(const int board[BOARD_SIZE][BOARD_SIZE], size_t side_size) {
     // top of a border
-    printf("┌");
-    for (int i = 0; i < side_size * 5; i++) {
-        printf("─");
-    }
-    printf("┐\n");
-
-    repeat_char(' ', side_size);
+    repeat_char("─", "┌", "┐", side_size, n);
+    n++;
+    repeat_char(" ", "│", "│", side_size, n);
 
     for (int i = 0; i < side_size; i++) {
-        printf("│  ");
+        n++;
+        printf("│%*s", PADDING, " ");
         for (int j = 0; j < side_size; j++) {
             const char *color_code = COLOR_OTHER;
 
@@ -45,17 +35,38 @@ int draw(const int board[BOARD_SIZE][BOARD_SIZE], size_t side_size) {
             }
             // clang-format on
 
-            printf("%s%4d%s", color_code, board[i][j], COLOR_RESET);
+            printf("%s%*d%s", color_code, CELL_SIZE, board[i][j], COLOR_RESET);
         }
-        printf("  │\n");
-        repeat_char(' ', side_size);
+        printf("%*s│%s\n", PADDING, " ", print_message(n));
+        n++;
+        repeat_char(" ", "│", "│", side_size, n);
     }
 
     // bottom of a border
-    printf("└");
-    for (int i = 0; i < side_size * 5; i++) {
-        printf("─");
+    n++;
+    repeat_char("─", "└", "┘", side_size, n);
+    return 0;
+}
+
+char *print_message(int n) {
+    static char temp[25];
+    sprintf(temp, "  SCORE: %8lu", score);
+    // clang-format off
+    switch (n) {
+        case 0: return "      2 0 4 8    ";
+        case 1: return "  ---------------";
+        case 2: return temp;
+
+        default: return "";
     }
-    printf("┘\n");
+    // clang-format on
+}
+
+int repeat_char(char *ch, char *first_char, char *last_char, int side_size, int n) {
+    printf("%s", first_char);
+    for (int i = 0; i < side_size * CELL_SIZE + PADDING * 2; i++) {
+        printf("%s", ch);
+    }
+    printf("%s%s\n", last_char, print_message(n));
     return 0;
 }
