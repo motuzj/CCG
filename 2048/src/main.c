@@ -74,5 +74,6 @@ int main(int argc, char *argv[]) {
         }
     }
     printf("\n");
+    free_board(board, side_size);
     return 0;
 }
