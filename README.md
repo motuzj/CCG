@@ -1,7 +1,7 @@
 # CCG
 ![Logo](./assets/logo.png)
 
-This is my collection of **CLI C Games**. Currently [minesweeper](./minesweeper/README.md) and [wordle](./wordle/README.md) games are available. 
+This is my collection of **CLI C Games**. Currently [minesweeper](./minesweeper/README.md), [wordle](./wordle/README.md) and [2048](./2048/README.md) games are available.
 
 ## Building
 
