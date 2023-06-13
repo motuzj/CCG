@@ -1,5 +1,7 @@
 # 2048
 
+![Screenshot_20230613_193500](https://github.com/motuzj/CCG/assets/30744041/e1c07642-8426-49f2-a416-ca9326bf7539)
+
 ## How to play
 
 2048 is game where you goal is to reach a 2048 tile/cell. You can do that by moving and merging cells with a same values together.
@@ -10,7 +12,9 @@ Read more on [Wikipedia](https://en.wikipedia.org/wiki/2048_(video_game)).
 
 ## Options
 
-- `-s <side-length>`: Lenght of the sides of the game board (must be bigger than 1)
+- `-s <side-length>`: Lenght of the sides of the game board (must be bigger than 1).
+- `-e`: Enable endless mode - the game doesn't end at 2048.
+- `-m`: Minimalist mode - hide side informations (score, game name).
 
 ## Building
 

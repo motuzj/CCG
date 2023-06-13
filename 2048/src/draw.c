@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 
@@ -5,6 +6,7 @@
 #include "main.h"
 
 int draw(int **board, int side_size) {
+    printf("\e[1;1H\e[2J");
     int n = 0;
 
     // top of a border
@@ -49,6 +51,9 @@ int draw(int **board, int side_size) {
 }
 
 char *print_message(int n) {
+    if (minimal) {
+        return "";
+    }
     static char temp[25];
     sprintf(temp, "  SCORE: %8lu", score);
     // clang-format off

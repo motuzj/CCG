@@ -2,191 +2,22 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <termios.h>
-#include <time.h>
 
 #include "draw.h"
-#include "main.h"
+#include "game.h"
 
-// GLOBAL VARIABLES
+// GLOBAL VARIABLES/OPTIONS
 unsigned long score = 0; // score counter
-
-// get one char; from this: https://stackoverflow.com/a/7469410
-int getch() {
-    static struct termios old, current;
-    char ch;
-    tcgetattr(0, &old);         /* grab old terminal i/o settings */
-    current = old;              /* make new settings same as old settings */
-    current.c_lflag &= ~ICANON; /* disable buffered i/o */
-    current.c_lflag &= ~ECHO;   /* set no echo mode */
-    tcsetattr(0, TCSANOW, &current);
-    ch = getchar();
-    tcsetattr(0, TCSANOW, &old);
-    return ch;
-}
-
-bool process_input(char ch, int **board, int side_size) {
-    bool moved = false;
-
-    switch (ch) {
-        case 'h':
-        case 'D':
-        case 'a': // left
-            for (int i = 0; i < side_size; i++) {
-                bool merged = false;
-                for (int j = 1; j < side_size; j++) {
-                    if (board[i][j] > 0) {
-                        for (int k = j; k > 0; k--) {
-                            if (board[i][k - 1] == 0) {
-                                board[i][k - 1] = board[i][k];
-                                board[i][k] = 0;
-                                moved = true;
-                            } else if (board[i][k] == board[i][k - 1] && !merged) {
-                                board[i][k] = 0;
-                                board[i][k - 1] *= 2;
-                                score += board[i][k - 1];
-                                merged = true;
-                                moved = true;
-                            }
-                        }
-                    }
-                }
-            }
-            break;
-        case 'l':
-        case 'C':
-        case 'd': // right
-            for (int i = side_size - 1; i >= 0; i--) {
-                bool merged = false;
-                for (int j = side_size - 2; j >= 0; j--) {
-                    if (board[i][j] > 0) {
-                        for (int k = j; k < side_size - 1; k++) {
-                            if (board[i][k + 1] == 0) {
-                                board[i][k + 1] = board[i][k];
-                                board[i][k] = 0;
-                                moved = true;
-                            } else if (board[i][k] == board[i][k + 1] && !merged) {
-                                board[i][k] = 0;
-                                board[i][k + 1] *= 2;
-                                score += board[i][k + 1];
-                                merged = true;
-                                moved = true;
-                            }
-                        }
-                    }
-                }
-            }
-            break;
-        case 'k':
-        case 'A':
-        case 'w': // up
-            for (int i = 1; i < side_size; i++) {
-                for (int j = 0; j < side_size; j++) {
-                    bool merged = false;
-                    if (board[i][j] > 0) {
-                        for (int k = i; k > 0; k--) {
-                            if (board[k - 1][j] == 0) {
-                                board[k - 1][j] = board[k][j];
-                                board[k][j] = 0;
-                                moved = true;
-                            } else if (board[k][j] == board[k - 1][j] && !merged) {
-                                board[k][j] = 0;
-                                board[k - 1][j] *= 2;
-                                score += board[k - 1][j];
-                                merged = true;
-                                moved = true;
-                            }
-                        }
-                    }
-                }
-            }
-            break;
-        case 'j':
-        case 'B':
-        case 's': // down
-            for (int i = side_size - 2; i >= 0; i--) {
-                for (int j = side_size - 1; j >= 0; j--) {
-                    bool merged = false;
-                    if (board[i][j] > 0) {
-                        for (int k = i; k < side_size - 1; k++) {
-                            if (board[k + 1][j] == 0) {
-                                board[k + 1][j] = board[k][j];
-                                board[k][j] = 0;
-                                moved = true;
-                            } else if (board[k][j] == board[k + 1][j] && !merged) {
-                                board[k][j] = 0;
-                                board[k + 1][j] *= 2;
-                                score += board[k + 1][j];
-                                merged = true;
-                                moved = true;
-                            }
-                        }
-                    }
-                }
-            }
-            break;
-    }
-    return moved;
-}
-
-bool is_game_over(int **board, int side_size) {
-    // check if there are any empty cells
-    for (int i = 0; i < side_size; i++) {
-        for (int j = 0; j < side_size; j++) {
-            if (board[i][j] == 0) {
-                return false; // there is an empty cell
-            }
-        }
-    }
-
-    // check if there are any cells with the same value
-    for (int i = 0; i < side_size; i++) {
-        for (int j = 0; j < side_size; j++) {
-            if (j < side_size - 1 && board[i][j] == board[i][j + 1]) {
-                return false;
-            }
-            if (i < side_size - 1 && board[i][j] == board[i + 1][j]) {
-                return false;
-            }
-        }
-    }
-
-    return true; // game over - no empty cells and no other cells with the same value
-}
-
-int initialize_board(int ***board, int side_size) {
-    *board = (int **)calloc(side_size, sizeof(int *));
-    if (*board == NULL) {
-        printf("\nError: Not enough memory to allocate.\nExiting...\n");
-        return 1;
-    }
-    for (int i = 0; i < side_size; i++) {
-        (*board)[i] = (int *)calloc(side_size, sizeof(int));
-        if ((*board)[i] == NULL) {
-            printf("\nError: Not enough memory to allocate.\nExiting...\n");
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
-int generate_random_number(int **board, int side_size) {
-    while (1) {
-        int rand_x = rand() % side_size;
-        int rand_y = rand() % side_size;
-        if (board[rand_y][rand_x] == 0) {
-            board[rand_y][rand_x] = rand() % 10 == rand() % 10 ? 4 : 2;
-            return 0;
-        }
-    }
-}
+bool minimal = false;
 
 int main(int argc, char *argv[]) {
+    int **board = NULL;
     int side_size = 4; // default size of the board
 
+    bool endless = false; // endless mode, you can loose, but can't win
+
     int opt;
-    while ((opt = getopt(argc, argv, "s:")) != -1) {
+    while ((opt = getopt(argc, argv, "s:em")) != -1) {
         switch (opt) {
             case 's': {
                 int arg_side_size = atoi(optarg);
@@ -195,20 +26,44 @@ int main(int argc, char *argv[]) {
                 }
                 break;
             }
+            case 'e': {
+                endless = true;
+                break;
+            }
+            case 'm': {
+                minimal = true;
+            }
         }
     }
 
-    int **board = NULL;
     if (initialize_board(&board, side_size)) {
         return 1;
     }
-    srand(time(NULL));
-    generate_random_number(board, side_size);
+
+    place_random(board, side_size);
 
     while (1) {
-        printf("\e[1;1H\e[2J");
-        generate_random_number(board, side_size);
+        place_random(board, side_size);
         draw(board, side_size);
+
+        if (is_game_won(board, side_size) && !endless) {
+            printf("You've won, do you want to keep playing?[Y/n] ");
+            switch (getchar()) {
+                case 'n':
+                case 'N': {
+                    free_board(board, side_size);
+                    return 0;
+                    break;
+                }
+                case 'y':
+                case 'Y':
+                case '\n': {
+                    endless = true;
+                    break;
+                }
+            }
+            draw(board, side_size);
+        }
 
         if (is_game_over(board, side_size)) {
             printf("No empty space left. GAME OVER!\n");
@@ -218,10 +73,6 @@ int main(int argc, char *argv[]) {
         while (!process_input(getch(), board, side_size)) {
         }
     }
-    for (int i = 0; i < side_size; i++) {
-        free(board[i]);
-    }
-    free(board);
     printf("\n");
     return 0;
 }

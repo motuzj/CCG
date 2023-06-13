@@ -1,8 +1,6 @@
 #ifndef DRAW_H
 #define DRAW_H
 
-#include <stddef.h>
-
 #define CELL_SIZE 5
 #define PADDING 2
 
@@ -23,7 +21,7 @@
 
 /*
  * Function: draw
- * Description: Returns a message used to display different information.
+ * Description: Prints a text output and TUI.
  * Arguments:
  *   board - Pointer to 2D array board
  *   side_size - Length of one side of board.
@@ -32,7 +30,7 @@ int draw(int **board, int side_size);
 
 /*
  * Function: print_message
- * Description: Returns a message used to display different information.
+ * Description: Returns a message used to display different information, but only if `minimal` option is set to false.
  * Arguments:
  *   n - Int that determines the message to be returned.
  * Return Value:
