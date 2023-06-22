@@ -18,8 +18,9 @@ enum PlayerState {
 };
 
 struct Player {
-    double x;
-    double y;
+    float head_x; // columns
+    float head_y; // rows
+    float *body;
     int dir;
     int player_state;
     int score;
@@ -27,6 +28,7 @@ struct Player {
     const int key_down;
     const int key_left;
     const int key_right;
+    const int color_code;
 };
 
 #endif

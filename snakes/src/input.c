@@ -43,13 +43,13 @@ int get_input(struct Player *player) {
 }
 
 int process_input(struct Player *player, int key) {
-    if (key == player->key_up || key == toupper(player->key_up)) {
+    if ((key == player->key_up || key == toupper(player->key_up)) && player->dir != DOWN) {
         player->dir = UP;
-    } else if (key == player->key_down || key == toupper(player->key_down)) {
+    } else if ((key == player->key_down || key == toupper(player->key_down)) && player->dir != UP) {
         player->dir = DOWN;
-    } else if (key == player->key_left || key == toupper(player->key_left)) {
+    } else if ((key == player->key_left || key == toupper(player->key_left)) && player->dir != RIGHT) {
         player->dir = LEFT;
-    } else if (key == player->key_right || key == toupper(player->key_right)) {
+    } else if ((key == player->key_right || key == toupper(player->key_right)) && player->dir != LEFT) {
         player->dir = RIGHT;
     } else if (key == 'q' || key == 'Q') {
         exit(0);
