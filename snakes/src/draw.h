@@ -11,6 +11,6 @@
  *   player2 - Pointer to the second player.
  *   fruits - Pointer to a array containing all fruits from board
  */
-int draw(struct Player player1, struct Player player2, bool fruits[], int frames);
+int draw(struct Player player1, struct Player player2, bool fruits[]);
 
 #endif

@@ -1,8 +1,14 @@
 #ifndef MAIN
 #define MAIN
 
+#include <stdbool.h>
+
 extern int board_rows;
 extern int board_cols;
+
+// options
+extern bool disable_borders;
+
 enum Direction {
     NONE,
     UP,
@@ -18,17 +24,17 @@ enum PlayerState {
 };
 
 struct Player {
-    float head_x; // columns
-    float head_y; // rows
-    float *body;
+    int head_x; // columns
+    int head_y; // rows
+    int *body;
     int dir;
     int player_state;
     int score;
-    const int key_up;
-    const int key_down;
-    const int key_left;
-    const int key_right;
-    const int color_code;
+    int key_up;
+    int key_down;
+    int key_left;
+    int key_right;
+    int color_code;
 };
 
 #endif

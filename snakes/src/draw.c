@@ -3,31 +3,35 @@
 
 #include "main.h"
 
-int draw(struct Player player1, struct Player player2, bool fruits[], int frames) {
+int draw(struct Player player1, struct Player player2, bool fruits[]) {
     printf("\e[1;1H\e[2J"); // clear terminal
-    for (int i = 0; i < board_rows - 1; i++) {
-        for (int j = 0; j < board_cols; j++) {
-            if (i == 0 && j == 0) {
-                printf("%5ds%2d", frames, player1.score); // frames counter
-                continue;
-            }
-            if (i == 0 && j <= 7) {
-                continue;
-            }
 
+    // print top border
+    for (int i = 0; i < board_cols + 2; i++) {
+        printf("#");
+    }
+    printf("\n");
+
+    for (int i = 0; i < board_rows; i++) {
+        printf("#");
+        for (int j = 0; j < board_cols; j++) {
             bool printed_body_part = false;
 
-            for (int k = 0; k < i * j; k += 2) {
-                if ((int)player1.body[k] == j && (int)player1.body[k + 1] == i) {
+            for (int k = 0; player1.body[k] != -1; k += 2) {
+                if (player1.body[k] == j && player1.body[k + 1] == i) {
                     printf("\033[%dmo\033[0m", player1.color_code);
                     printed_body_part = true;
                     break;
                 }
             }
 
-            if (player2.player_state != NONE) {
-                for (int k = 0; k < i * j; k += 2) {
-                    if ((int)player2.body[k] == j && (int)player2.body[k + 1] == i) {
+            if (printed_body_part) {
+                continue;
+            }
+
+            if (player2.player_state != NOT_PLAYING) {
+                for (int k = 0; player2.body[k] != -1; k += 2) {
+                    if (player2.body[k] == j && player2.body[k + 1] == i) {
                         printf("\033[%dmo\033[0m", player2.color_code);
                         printed_body_part = true;
                         break;
@@ -39,11 +43,9 @@ int draw(struct Player player1, struct Player player2, bool fruits[], int frames
                 continue;
             }
 
-            if (i == 0 || i == board_rows - 2 || j == 0 || j == board_cols - 1) {
-                printf("#");
-            } else if (i == (int)player1.head_y && j == (int)player1.head_x && player1.player_state != NONE) {
+            if (i == player1.head_y && j == player1.head_x && player1.player_state != NONE) {
                 printf("\033[%dmO\033[0m", player1.color_code);
-            } else if (i == (int)player2.head_y && j == (int)player2.head_x && player2.player_state != NONE) {
+            } else if (i == player2.head_y && j == player2.head_x && player2.player_state != NONE) {
                 printf("\033[%dmO\033[0m", player2.color_code);
             } else if (fruits[i * board_cols + j] == true) {
                 printf("\033[41mX\033[0m");
@@ -51,8 +53,15 @@ int draw(struct Player player1, struct Player player2, bool fruits[], int frames
                 printf(" ");
             }
         }
-        printf("\n");
+        printf("#\n");
     }
+
+    // print bottom border
+    for (int i = 0; i < board_cols + 2; i++) {
+        printf("#");
+    }
+
+    printf("\n");
 
     return 0;
 }
