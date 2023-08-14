@@ -17,7 +17,7 @@ int draw(struct Player player1, struct Player player2, bool fruits[]) {
         for (int j = 0; j < board_cols; j++) {
             bool printed_body_part = false;
 
-            for (int k = 0; player1.body[k] != -1; k += 2) {
+            for (int k = 0; k < player1.body_length * 2; k += 2) {
                 if (player1.body[k] == j && player1.body[k + 1] == i) {
                     printf("\033[%dmo\033[0m", player1.color_code);
                     printed_body_part = true;
@@ -30,7 +30,7 @@ int draw(struct Player player1, struct Player player2, bool fruits[]) {
             }
 
             if (player2.player_state != NOT_PLAYING) {
-                for (int k = 0; player2.body[k] != -1; k += 2) {
+                for (int k = 0; k < player2.body_length * 2; k += 2) {
                     if (player2.body[k] == j && player2.body[k + 1] == i) {
                         printf("\033[%dmo\033[0m", player2.color_code);
                         printed_body_part = true;

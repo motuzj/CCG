@@ -26,7 +26,10 @@ enum PlayerState {
 struct Player {
     int head_x; // columns
     int head_y; // rows
+    int tail_x;
+    int tail_y;
     int *body;
+    int body_length;
     int dir;
     int player_state;
     int score;

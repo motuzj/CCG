@@ -28,7 +28,7 @@ int get_input(struct Player *player) {
     fds[0].fd = STDIN_FILENO;
     fds[0].events = POLLIN;
 
-    int temp = poll(fds, 1, 50);
+    int temp = poll(fds, 1, 133);
     if (temp == -1) {
         perror("poll");
         return -1;

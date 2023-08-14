@@ -39,8 +39,37 @@ int main(int argc, char *argv[]) {
         fruits[i] = false;
     }
 
-    struct Player player1 = {board_cols / 3, board_rows / 2, NULL, NONE, PLAYING, 0, 'w', 's', 'a', 'd', 32};
-    struct Player player2 = {board_cols / 3 * 2, board_rows / 2, NULL, NONE, PLAYING, 0, 'i', 'k', 'j', 'l', 92};
+    struct Player player1 = {
+        .head_x = board_cols / 3,
+        .head_y = board_rows / 2,
+        .tail_x = 0,
+        .tail_y = 0,
+        .body = NULL,
+        .body_length = 4,
+        .dir = NONE,
+        .player_state = PLAYING,
+        .score = 0,
+        .key_up = 'w',
+        .key_down = 's',
+        .key_left = 'a',
+        .key_right = 'd',
+        .color_code = 32};
+
+    struct Player player2 = {
+        .head_x = board_cols / 3 * 2,
+        .head_y = board_rows / 2,
+        .tail_x = 0,
+        .tail_y = 0,
+        .body = NULL,
+        .body_length = 4,
+        .dir = NONE,
+        .player_state = PLAYING,
+        .score = 0,
+        .key_up = 'i',
+        .key_down = 'k',
+        .key_left = 'j',
+        .key_right = 'l',
+        .color_code = 92};
 
     initialize_body(&player1);
 
@@ -63,7 +92,7 @@ int main(int argc, char *argv[]) {
     int frames = 0; // counts every redraw
 
     while (1) {
-        if (frames % 80 == 0 && count_fruits(fruits) < 6 && (player2.dir != NONE || player2.player_state == NOT_PLAYING)) {
+        if (frames % 80 == 0 && count_fruits(fruits) < 6 && (player2.dir != NONE || player2.player_state == NOT_PLAYING || player2.player_state == DEAD)) {
             place_fruit(fruits);
         }
         check_fruit_collision(&player1, fruits);
@@ -77,8 +106,6 @@ int main(int argc, char *argv[]) {
         } else if (input == -1) {
             return 1;
         }
-
-        draw(player1, player2, fruits);
 
         // move player +1 in it's dir
         move_player(&player1);

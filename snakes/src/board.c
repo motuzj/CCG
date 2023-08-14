@@ -10,23 +10,20 @@ int check_fruit_collision(struct Player *player, bool fruits[]) {
     int player_col = player->head_x;
 
     if (fruits[player_row * board_cols + player_col] == true) {
-        player->score += 1;
+        player->score++;
+        player->body_length++;
         fruits[player_row * board_cols + player_col] = false;
 
         // add +1 size to body
-        for (int i = (board_cols * board_rows) - 1; i >= 0; i--) {
-            if (player->body[i] != -1) {
-                player->body[i + 1] = player->body[i];     // y
-                player->body[i + 2] = player->body[i - 1]; // x
-                break;
-            }
-        }
+        player->body = (int *)realloc(player->body, 2 * player->body_length * sizeof(int));
+        player->body[(player->body_length - 1) * 2] = player->tail_x;
+        player->body[(player->body_length - 1) * 2 + 1] = player->tail_y;
     }
     return 0;
 }
 
 int check_snakes_collision(struct Player *player, struct Player *enemy) {
-    for (int i = 0; enemy->body[i] != -1; i += 2) {
+    for (int i = 0; i < enemy->body_length * 2; i += 2) {
         if ((player->head_x == enemy->body[i] && player->head_y == enemy->body[i + 1]) ||
             (player->head_x == enemy->head_x && player->head_y == enemy->head_y)) {
             player->player_state = DEAD;
@@ -37,7 +34,7 @@ int check_snakes_collision(struct Player *player, struct Player *enemy) {
 }
 
 int check_self_collision(struct Player *player) {
-    for (int i = 0; player->body[i] != -1; i += 2) {
+    for (int i = 0; i < player->body_length * 2; i += 2) {
         if (player->head_x == player->body[i] && player->head_y == player->body[i + 1]) {
             player->player_state = DEAD;
             break;
@@ -61,7 +58,6 @@ int place_fruit(bool fruits[]) {
 
     int rand_row;
     int rand_col;
-
     do {
         rand_col = rand() % (board_cols - 2) + 1;
         rand_row = rand() % (board_rows - 2);

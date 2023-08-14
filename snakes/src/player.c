@@ -7,18 +7,27 @@
 
 int initialize_body(struct Player *player) {
     player->body = NULL;
-    player->body = (int *)calloc(board_cols * board_rows, sizeof(int));
+    player->body = (int *)calloc(player->body_length * 2, sizeof(int));
     if (player->body == NULL) {
         fprintf(stderr, "\nError: Not enough memory to allocate.\nExiting...\n");
         return 1;
     }
-    for (int i = 0; i < board_cols * board_rows; i++) {
-        player->body[i] = -1;
+    for (int i = 0; i < player->body_length * 2; i += 2) {
+        player->body[i] = player->head_x - (i / 2) - 1;
+        player->body[i + 1] = player->head_y;
     }
 
-    for (int i = 0; i <= 7; i += 2) {
-        player->body[i] = player->head_x - ((i / 2) + 1);
-        player->body[i + 1] = player->head_y;
+    // set tail coords to last element of player->body
+    player->tail_x = player->body[sizeof(player->body) / sizeof(player->body[0]) - 2];
+    player->tail_y = player->body[sizeof(player->body) / sizeof(player->body[0]) - 1];
+
+    int remove_this[50];
+    for (int i = 0; i < 50; i++) {
+        remove_this[i] = -1;
+    }
+    for (int i = 0; i < 50; i += 2) {
+        remove_this[i] = player->body[i];
+        remove_this[i + 1] = player->body[i + 1];
     }
     return 0;
 }
@@ -60,41 +69,49 @@ int move_player(struct Player *player) {
         return 0;
     }
 
-    // body
-    if (player->dir != NONE) {
-        for (int i = (board_cols * board_rows) - 1; i > 0; i -= 2) {
-            if (player->body[i] != -1) {
-                int temp_x = player->body[i];
-                int temp_y = player->body[i - 1];
-                player->body[i] = player->body[i - 2];
-                player->body[i - 1] = player->body[i - 3];
-                player->body[i - 2] = temp_x;
-                player->body[i - 3] = temp_y;
-            }
-        }
-        player->body[0] = player->head_x;
-        player->body[1] = player->head_y;
-    }
-
     // head
+    int new_head_x = player->head_x;
+    int new_head_y = player->head_y;
+
     switch (player->dir) {
         case UP: {
-            player->head_y -= 1;
+            new_head_y -= 1;
             break;
         }
         case DOWN: {
-            player->head_y += 1;
+            new_head_y += 1;
             break;
         }
         case LEFT: {
-            player->head_x -= 1;
+            new_head_x -= 1;
             break;
         }
         case RIGHT: {
-            player->head_x += 1;
+            new_head_x += 1;
             break;
         }
     }
+
+    // body
+    int prev_head_x = player->head_x;
+    int prev_head_y = player->head_y;
+    player->head_x = new_head_x;
+    player->head_y = new_head_y;
+
+    if (player->dir != NONE) {
+        for (int i = 0; i < player->body_length * 2; i += 2) {
+            int temp_x = player->body[i];
+            int temp_y = player->body[i + 1];
+            player->body[i] = prev_head_x;
+            player->body[i + 1] = prev_head_y;
+            prev_head_x = temp_x;
+            prev_head_y = temp_y;
+        }
+    }
+
+    // update tail coords
+    player->tail_x = player->body[(player->body_length - 1) * 2];
+    player->tail_y = player->body[(player->body_length - 1) * 2 + 1];
 
     check_player_boundary(player);
     return 0;

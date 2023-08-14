@@ -1,5 +1,7 @@
 # Snakes
 
+![screenshot](https://github.com/motuzj/CCG/assets/30744041/898cb8e6-8835-4db4-bda9-56526c57984e)
+
 The game Snakes is game for one or two players. The goal is to achieve a highest score by collecting fruits. The player with the highest score wins.
 
 ## Controls
