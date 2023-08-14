@@ -20,15 +20,6 @@ int initialize_body(struct Player *player) {
     // set tail coords to last element of player->body
     player->tail_x = player->body[sizeof(player->body) / sizeof(player->body[0]) - 2];
     player->tail_y = player->body[sizeof(player->body) / sizeof(player->body[0]) - 1];
-
-    int remove_this[50];
-    for (int i = 0; i < 50; i++) {
-        remove_this[i] = -1;
-    }
-    for (int i = 0; i < 50; i += 2) {
-        remove_this[i] = player->body[i];
-        remove_this[i + 1] = player->body[i + 1];
-    }
     return 0;
 }
 

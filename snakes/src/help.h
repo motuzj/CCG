@@ -7,4 +7,10 @@
  */
 int welcome_message();
 
+/*
+ * Function: display_help
+ * Description: Prints help message.
+ */
+int display_help();
+
 #endif

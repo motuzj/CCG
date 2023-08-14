@@ -1,7 +1,7 @@
 NAME=snakes
 
 main:
-	cc -g -Wall -o $(NAME) ./src/*.c
+	cc -o $(NAME) ./src/*.c
 
 run: main
 	./$(NAME)

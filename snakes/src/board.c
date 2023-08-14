@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "board.h"
 #include "main.h"
 
 int check_fruit_collision(struct Player *player, bool fruits[]) {
@@ -13,6 +14,9 @@ int check_fruit_collision(struct Player *player, bool fruits[]) {
         player->score++;
         player->body_length++;
         fruits[player_row * board_cols + player_col] = false;
+
+        // place new fruit
+        place_fruit(fruits);
 
         // add +1 size to body
         player->body = (int *)realloc(player->body, 2 * player->body_length * sizeof(int));
@@ -59,8 +63,8 @@ int place_fruit(bool fruits[]) {
     int rand_row;
     int rand_col;
     do {
-        rand_col = rand() % (board_cols - 2) + 1;
-        rand_row = rand() % (board_rows - 2);
+        rand_col = rand() % board_cols;
+        rand_row = rand() % board_rows;
     } while (fruits[rand_row * board_cols + rand_col] == true);
     fruits[rand_row * board_cols + rand_col] = true;
     return 0;

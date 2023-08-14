@@ -13,6 +13,8 @@ You can press 'q' in-game to quit.
 ## Options
 
 - `-b`: Disable borders.
+- `-s [SPEED]`: Speed of a player, 1 (max) - 10 (min), default 5.
+- `-h`: Show this help message and exit.
 
 ## Building
 
