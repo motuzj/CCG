@@ -1,70 +1,70 @@
-#include <fcntl.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/ioctl.h>
-#include <termios.h>
 #include <time.h>
-#include <unistd.h>
 
+#include "main.h"
 #include "spaceships.h"
 #include "stars.h"
 
 int columns = 80;
 int rows = 25;
+int warp_factor = 1; // 0 (min) - 10 (max)
 
-struct termios original_termios;
-
-typedef struct {
-    const char *name;
-    const bool is_enemy;
-    char texture; // texture of spaceship from spaceships.h
-    int shields;
-    int column; // spaceships column (top left corner)
-    int row;    // spaceship row (top left corner)
-} Spaceship;
-
-int init_termios() {
-    tcgetattr(STDIN_FILENO, &original_termios);
-    struct termios new_termios = original_termios;
-    new_termios.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
+int print_ship(Spaceship spaceship) {
+    for (int i = 0; i < spaceship.texture_lines; i++) {
+        printf("\033[%d;%dH", spaceship.row + i, spaceship.column);
+        printf("%s\n", spaceship.texture[i]);
+    }
     return 0;
 }
 
-int print_ship(const char ship[][50], int lines) {
-    for (int i = 0; i < lines; i++) {
-        printf("%s\n", ship[i]);
+int set_ship_texture(Spaceship *spaceship, char texture[][50]) {
+    for (int i = 0; i < spaceship->texture_lines; i++) {
+        strncpy(spaceship->texture[i], texture[i], sizeof(spaceship->texture[i]));
     }
+    return 0;
 }
 
 int main() {
-    print_ship(enterprise, 5);
-    print_ship(klingons, 6);
-    return 0;
-
     srand(time(NULL));
 
     struct winsize ws;
     ioctl(0, TIOCGWINSZ, &ws);
-    columns = ws.ws_col; // terminal width
-    rows = ws.ws_row;    // terminal height
+    columns = ws.ws_col;  // terminal width
+    rows = ws.ws_row + 1; // terminal height
 
-    init_termios();
+    enable_raw_mode();
 
     printf("\033[?25l");     // hide cursor
     printf("\033[2J\033[H"); // clear screen
 
     init_stars();
 
+    Spaceship enterprise = {
+        .name = "USS Enterprise",
+        .is_enemy = false,
+        .texture = enterprise_basic,
+        .texture_lines = 5,
+        .shields = 1000,
+        .column = 2,
+        .row = (rows / 2) - 2};
+    set_ship_texture(&enterprise, enterprise_basic);
+
     while (1) {
-        update_stars();
+        for (int i = 0; i < warp_factor; i++) {
+            update_stars();
+        }
         draw_stars();
-        usleep(100000);          // 100ms
+        print_ship(enterprise);
+        int input = get_input();
+        if (input > 0) {
+            process_input(&enterprise, input);
+        } else if (input == -1) {
+            return 1;
+        }
         printf("\033[2J\033[H"); // clear screen
     }
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
     return 0;
 }

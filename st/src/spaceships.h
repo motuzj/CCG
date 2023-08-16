@@ -1,11 +1,11 @@
 #ifndef SPACESHIPS
 #define SPACESHIPS
 
-const char enterprise[][50] = {
+const char enterprise_basic[][50] = {
     "_____________    _______=________",
     "\\________, ,__) /  ____    ______/",
     "       ___\\ \\__/  /__, `--'",
-    "      /_ NCC-1701     )",
+    "      /  NCC-1701     )",
     "      `--------------'"};
 
 const char klingons[][50] = {
