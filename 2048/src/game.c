@@ -161,13 +161,13 @@ int place_random(int **board, int side_size) {
 int initialize_board(int ***board, int side_size) {
     *board = (int **)calloc(side_size, sizeof(int *));
     if (*board == NULL) {
-        printf("\nError: Not enough memory to allocate.\nExiting...\n");
+        fprintf(stderr, "\nError: Not enough memory to allocate.\nExiting...\n");
         return 1;
     }
     for (int i = 0; i < side_size; i++) {
         (*board)[i] = (int *)calloc(side_size, sizeof(int));
         if ((*board)[i] == NULL) {
-            printf("\nError: Not enough memory to allocate.\nExiting...\n");
+            fprintf(stderr, "\nError: Not enough memory to allocate.\nExiting...\n");
             return 1;
         }
     }

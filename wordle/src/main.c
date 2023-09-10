@@ -48,8 +48,8 @@ int main(int argc, char *argv[]) {
         dictionary_path = "dict/english.txt";
     }
 
-    char *wordle;
-    if ((wordle = get_word(dictionary_path)) == NULL) {
+    char *secret_word;
+    if ((secret_word = get_word(dictionary_path)) == NULL) {
         return 1;
     }
 
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
         }
 
         int last_guess_state;
-        if ((last_guess_state = check_guess(guess, wordle)) == 1) {
+        if ((last_guess_state = check_guess(guess, secret_word)) == 1) {
             break;
         } else if (last_guess_state == 0) {
             number_of_loop++;
@@ -86,8 +86,8 @@ int main(int argc, char *argv[]) {
         printf("\033[%d;1H\033[J", number_of_loop * 2 + 2);
         printf("┃G┃A┃M┃E┃ ┃\n┃ ┃O┃V┃E┃R┃");
         printf("\n┗━┻━┻━┻━┻━┛\n");
-        printf("You failed to guess the word '%s'\n", wordle);
+        printf("You failed to guess the word '%s'\n", secret_word);
     }
-    free(wordle);
+    free(secret_word);
     return 0;
 }

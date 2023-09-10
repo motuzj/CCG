@@ -4,7 +4,7 @@
 #include "main.h"
 
 int draw(struct Player player1, struct Player player2, bool fruits[]) {
-    printf("\e[1;1H\e[2J"); // clear terminal
+    printf("\003[1;1H\003[2J"); // clear terminal
 
     // print top border
     for (int i = 0; i < board_cols + 2; i++) {

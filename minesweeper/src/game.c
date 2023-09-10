@@ -12,7 +12,7 @@
 
 double minesPercentage = 0.13; // percentage of mines
 
-#define CLEAR_SCREEN "\e[1;1H\e[2J"
+#define CLEAR_SCREEN "\033[1;1H\033[2J"
 
 // set seed from from arguments
 int arg_set_seed(char arg[]) {
@@ -20,7 +20,7 @@ int arg_set_seed(char arg[]) {
     sscanf(arg, "%dx%dn%dc%dx%d#", &w, &h, &mines, &cursorX, &cursorY);
     const char *hexSeed = strchr(arg, '#');
     if (hexSeed == NULL) {
-        printf("Invalid string format. Hexadecimal number not found.\n");
+        fprintf(stderr, "Error: Invalid string format. Hexadecimal number not found.\n");
         return 1;
     }
     hexSeed++; // Move past the "#"
@@ -38,7 +38,7 @@ int generate_board(int guessX, int guessY, int w, int h) {
 
     // check if minesPercentage is in valid format
     if (minesPercentage < 0.0 || minesPercentage > 1.0) {
-        printf("Warning: Percentage of mines is too big or small, setting it to 13%%.");
+        fprintf(stderr, "Warning: Percentage of mines is too big or small, setting it to 13%%.");
         minesPercentage = 0.13;
     }
 
@@ -151,7 +151,7 @@ int set_board_size() {
         printf("Width: ");
         // write stdin to input and check if it is null
         if (fgets(input, sizeof(input), stdin) == NULL) {
-            printf("Error: There was some problem reading stdin, try it again!\n");
+            fprintf(stderr, "Error: There was some problem reading stdin, try it again!\n");
             continue;
         }
         // remove \n newline character from `input`
@@ -169,7 +169,7 @@ int set_board_size() {
         printf("Height: ");
         // write stdin to input and check if it is null
         if (fgets(input, sizeof(input), stdin) == NULL) {
-            printf("Error: There was some problem reading stdin, try it again!\n");
+            fprintf(stderr, "Error: There was some problem reading stdin, try it again!\n");
             continue;
         }
         // remove \n newline character from `input`
@@ -200,7 +200,7 @@ int initialize_board() {
     // initiation of board
     board = (Cell **)calloc(h, sizeof(Cell *));
     if (board == NULL) {
-        printf("\nError: Not enough memory to allocate.\nExiting...\n");
+        fprintf(stderr, "\nError: Not enough memory to allocate.\nExiting...\n");
         return 1;
     }
     for (int i = 0; i < h; i++) {
@@ -208,7 +208,7 @@ int initialize_board() {
     }
     for (int i = 0; i < h; i++) {
         if (board[i] == NULL) {
-            printf("\nError: Not enough memory to allocate.\nExiting...\n");
+            fprintf(stderr, "\nError: Not enough memory to allocate.\nExiting...\n");
             return 1;
         }
     }

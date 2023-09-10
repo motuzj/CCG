@@ -1,8 +1,8 @@
-#ifndef MAIN
-#define MAIN
+#ifndef MAIN_H
+#define MAIN_H
 
 #define WORD_LENGTH 5
-#define CLEAR_SCREEN "\e[1;1H\e[2J"
+#define CLEAR_SCREEN "\033[1;1H\033[2J"
 
 extern const char keys_us[];
 extern char correct_letters[27]; // green

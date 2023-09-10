@@ -7,7 +7,7 @@
 char *get_word(const char *dict) {
     FILE *file = fopen(dict, "r");
     if (file == NULL) {
-        perror("Error: Can't open file. Does it really exist?\n");
+        fprintf(stderr, "Error: Can't open file. Does it really exist?\n");
         return NULL;
     }
 
@@ -54,7 +54,7 @@ char *get_word(const char *dict) {
 int is_word_in_dict(const char *word, const char *dict) {
     FILE *file = fopen(dict, "r");
     if (file == NULL) {
-        perror("Error: Can't open file. Does it really exist?\n");
+        fprintf(stderr, "Error: Can't open file. Does it really exist?\n");
         fclose(file);
         return -1;
     }

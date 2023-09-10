@@ -6,7 +6,7 @@
 #include "main.h"
 
 int draw(int **board, int side_size) {
-    printf("\e[1;1H\e[2J");
+    printf("\033[1;1H\033[2J");
     int n = 0;
 
     // top of a border

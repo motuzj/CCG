@@ -1,5 +1,5 @@
-#ifndef GAME
-#define GAME
+#ifndef GAME_H
+#define GAME_H
 
 /*
  * Function: display_keyboard
@@ -8,13 +8,13 @@
 int display_keyboard();
 /*
  * Function: check_guess
- * Description: Compares the user's guess with the correct wordle and prints feedback.
+ * Description: Compares the user's guess with the correct word and prints feedback.
  * Arguments:
  *   guess - User's guess.
- *   wordle - Correct answer / target.
+ *   secret_word - Correct answer / target.
  * Return Value:
  *   1 if the guess is correct, -1 on error and 0 otherwise.
  */
-int check_guess(char *guess, char *wordle);
+int check_guess(char *guess, char *secret_word);
 
 #endif

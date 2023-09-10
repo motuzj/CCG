@@ -1,5 +1,5 @@
-#ifndef DICT
-#define DICT
+#ifndef DICT_H
+#define DICT_H
 /*
  * Function: get_word
  * Description: Returns random line with word from dictionary file.

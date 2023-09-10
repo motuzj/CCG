@@ -8,7 +8,7 @@
 #include "input.h"
 #include "main.h"
 
-#define CLEAR_SCREEN "\e[1;1H\e[2J"
+#define CLEAR_SCREEN "\033[1;1H\033[2J"
 
 // get one char; from this: https://stackoverflow.com/a/7469410
 int getch() {

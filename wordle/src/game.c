@@ -9,10 +9,6 @@
 #include "dict.h"
 #include "main.h"
 
-/*
- * Function: display_keyboard
- * Description: Displays keyboard with keys marked by colors
- */
 int display_keyboard() {
     if (disable_keyboard) {
         return 0;
@@ -42,20 +38,11 @@ int display_keyboard() {
     return 0;
 }
 
-/*
- * Function: check_guess
- * Description: Compares the user's guess with the correct wordle and prints feedback.
- * Arguments:
- *   guess - User's guess.
- *   wordle - Correct answer / target.
- * Return Value:
- *   1 if the guess is correct, -1 on error and 0 otherwise.
- */
-int check_guess(char *guess, char *wordle) {
-    if (!strcmp(wordle, guess)) {
+int check_guess(char *guess, char *secret_word) {
+    if (!strcmp(secret_word, guess)) {
         printf("┃");
         for (int i = 0; i < strlen(guess); i++) {
-            printf("\e[0;32m%c\e[0m┃", toupper(guess[i]));
+            printf("\033[0;32m%c\033[0m┃", toupper(guess[i]));
         }
         printf("\n┗━┻━┻━┻━┻━┛\n");
         printf("You have won!\n");
@@ -74,15 +61,15 @@ int check_guess(char *guess, char *wordle) {
         guess[i] = toupper(guess[i]);
     }
 
-    char temp_wordle[strlen(wordle) + 1];
+    char temp_secret_word[strlen(secret_word) + 1];
 
-    for (int i = 0; i < strlen(wordle); i++) {
-        temp_wordle[i] = toupper(wordle[i]);
+    for (int i = 0; i < strlen(secret_word); i++) {
+        temp_secret_word[i] = toupper(secret_word[i]);
     }
 
     for (int i = 0; i < strlen(guess); i++) {
-        if (guess[i] == temp_wordle[i]) {
-            printf("\e[0;32m%c\e[0m┃", guess[i]);
+        if (guess[i] == temp_secret_word[i]) {
+            printf("\033[0;32m%c\033[0m┃", guess[i]);
             copy_char_to_array(guess[i], correct_letters);
             continue;
         }
@@ -90,10 +77,10 @@ int check_guess(char *guess, char *wordle) {
         int correct_same_letters = 0;
         int worlde_same_letters = 0;
         for (int j = 0; j < WORD_LENGTH; j++) {
-            if (guess[j] == temp_wordle[j] && guess[j] == guess[i]) {
+            if (guess[j] == temp_secret_word[j] && guess[j] == guess[i]) {
                 correct_same_letters++;
             }
-            if (guess[i] == temp_wordle[j]) {
+            if (guess[i] == temp_secret_word[j]) {
                 worlde_same_letters++;
             }
         }
@@ -108,8 +95,8 @@ int check_guess(char *guess, char *wordle) {
             }
         }
 
-        if (guess_same_letters < worlde_same_letters && correct_same_letters < worlde_same_letters && strchr(temp_wordle, guess[i]) != NULL) {
-            printf("\e[0;33m%c\e[0m┃", guess[i]);
+        if (guess_same_letters < worlde_same_letters && correct_same_letters < worlde_same_letters && strchr(temp_secret_word, guess[i]) != NULL) {
+            printf("\033[0;33m%c\033[0m┃", guess[i]);
             copy_char_to_array(guess[i], present_letters);
         } else {
             printf("%c┃", guess[i]);
