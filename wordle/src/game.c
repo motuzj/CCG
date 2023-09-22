@@ -31,6 +31,7 @@ int display_keyboard() {
             printf("\033[0;100m%c\033[0m ", ch); // without color
         }
 
+        // print newline after few characters
         if (i == 9 || i == 18 || i == 25) {
             printf("\n");
         }
@@ -39,16 +40,18 @@ int display_keyboard() {
 }
 
 int check_guess(char *guess, char *secret_word) {
+    // check if the guess is correct
     if (!strcmp(secret_word, guess)) {
         printf("┃");
-        for (int i = 0; i < strlen(guess); i++) {
-            printf("\033[0;32m%c\033[0m┃", toupper(guess[i]));
+        for (int i = 0; i < WORD_LENGTH; i++) {
+            printf("\033[0;32m%c\033[0m┃", toupper(guess[i])); // print letter in green
         }
         printf("\n┗━┻━┻━┻━┻━┛\n");
         printf("You have won!\n");
         return 1;
     }
 
+    // check if the guess is not in the dictionary
     if (!is_word_in_dict(guess, dictionary_path)) {
         printf("Word wasn't found in dictionary\n");
         display_keyboard();
@@ -57,49 +60,57 @@ int check_guess(char *guess, char *secret_word) {
 
     printf("┃");
 
-    for (int i = 0; i < strlen(guess); i++) {
+    // convert guess to uppercase
+    for (int i = 0; i < WORD_LENGTH; i++) {
         guess[i] = toupper(guess[i]);
     }
 
-    char temp_secret_word[strlen(secret_word) + 1];
-
-    for (int i = 0; i < strlen(secret_word); i++) {
+    // make a copy of secret_word and convert it to uppercase
+    char temp_secret_word[WORD_LENGTH + 1];
+    for (int i = 0; i < WORD_LENGTH; i++) {
         temp_secret_word[i] = toupper(secret_word[i]);
     }
 
-    for (int i = 0; i < strlen(guess); i++) {
+    // check what letters are same
+    for (int i = 0; i < WORD_LENGTH; i++) {
+        // check if the letter in the guess is in the correct position in secret word
         if (guess[i] == temp_secret_word[i]) {
-            printf("\033[0;32m%c\033[0m┃", guess[i]);
+            printf("\033[0;32m%c\033[0m┃", guess[i]); // print letter in green
             copy_char_to_array(guess[i], correct_letters);
             continue;
         }
 
+        // this part seems too complicated, but I wanted the word checking to be the same as in the
+        // original/NY Times version of the game. to understand this code you need
+
+        // number of letters in the correct position
         int correct_same_letters = 0;
-        int worlde_same_letters = 0;
+        // number of letters appearing in the secret word but not in the correct position
+        int secret_word_same_letters = 0;
         for (int j = 0; j < WORD_LENGTH; j++) {
             if (guess[j] == temp_secret_word[j] && guess[j] == guess[i]) {
                 correct_same_letters++;
             }
             if (guess[i] == temp_secret_word[j]) {
-                worlde_same_letters++;
+                secret_word_same_letters++;
             }
         }
 
-        char letters_before[WORD_LENGTH];
-        strncpy(letters_before, guess, i);
-
-        int guess_same_letters = 0;
+        // number of times the current letter appears before the guess
+        int previous_same_letters = 0;
         for (int j = 0; j < i; j++) {
-            if (guess[i] == letters_before[j]) {
-                guess_same_letters++;
+            if (guess[i] == guess[j]) {
+                previous_same_letters++;
             }
         }
 
-        if (guess_same_letters < worlde_same_letters && correct_same_letters < worlde_same_letters && strchr(temp_secret_word, guess[i]) != NULL) {
-            printf("\033[0;33m%c\033[0m┃", guess[i]);
+        if (previous_same_letters < secret_word_same_letters &&
+            correct_same_letters < secret_word_same_letters &&
+            strchr(temp_secret_word, guess[i]) != NULL) {
+            printf("\033[0;33m%c\033[0m┃", guess[i]); // print letter in yellow
             copy_char_to_array(guess[i], present_letters);
         } else {
-            printf("%c┃", guess[i]);
+            printf("%c┃", guess[i]); // print letter without color
             copy_char_to_array(guess[i], absent_letters);
         }
     }
