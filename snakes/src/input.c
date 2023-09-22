@@ -10,9 +10,7 @@
 
 struct termios origTermios;
 
-void disableRawMode() {
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &origTermios);
-}
+void disableRawMode() { tcsetattr(STDIN_FILENO, TCSAFLUSH, &origTermios); }
 
 void enableRawMode() {
     tcgetattr(STDIN_FILENO, &origTermios);
@@ -47,9 +45,11 @@ int process_input(struct Player *player, int key) {
         player->dir = UP;
     } else if ((key == player->key_down || key == toupper(player->key_down)) && player->dir != UP) {
         player->dir = DOWN;
-    } else if ((key == player->key_left || key == toupper(player->key_left)) && player->dir != RIGHT) {
+    } else if ((key == player->key_left || key == toupper(player->key_left)) &&
+               player->dir != RIGHT) {
         player->dir = LEFT;
-    } else if ((key == player->key_right || key == toupper(player->key_right)) && player->dir != LEFT) {
+    } else if ((key == player->key_right || key == toupper(player->key_right)) &&
+               player->dir != LEFT) {
         player->dir = RIGHT;
     } else if (key == 'q' || key == 'Q') {
         exit(0);

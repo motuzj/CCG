@@ -24,7 +24,8 @@ int main(int argc, char *argv[]) {
             case 's':
                 option_speed = atoi(optarg);
                 if (option_speed < 1 && option_speed > 10) {
-                    fprintf(stderr, "Speed option value is not a number or it is smaller than 1 or bigger than 10! Setting speed to 5.");
+                    fprintf(stderr, "Speed option value is not a number or it is smaller than 1 or "
+                                    "bigger than 10! Setting speed to 5.");
                     option_speed = 5;
                 }
                 break;

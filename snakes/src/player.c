@@ -23,6 +23,11 @@ int initialize_body(struct Player *player) {
     return 0;
 }
 
+int free_body(struct Player *player) {
+    free(player->body);
+    return 0;
+}
+
 int _change_controls(struct Player *player, int player_number) {
     char ans[2];
     printf("\nDo you want to change controls for player %d ( y / N): ", player_number);
@@ -60,7 +65,7 @@ int move_player(struct Player *player) {
         return 0;
     }
 
-    // head
+    // move head
     int new_head_x = player->head_x;
     int new_head_y = player->head_y;
 
@@ -83,7 +88,7 @@ int move_player(struct Player *player) {
         }
     }
 
-    // body
+    // move body
     int prev_head_x = player->head_x;
     int prev_head_y = player->head_y;
     player->head_x = new_head_x;

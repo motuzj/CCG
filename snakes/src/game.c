@@ -19,37 +19,35 @@ int run_game() {
 
     place_fruit(fruits); // place first fruit
 
-    struct Player player1 = {
-        .head_x = board_cols / 3,
-        .head_y = board_rows / 2,
-        .tail_x = 0,
-        .tail_y = 0,
-        .body = NULL,
-        .body_length = 4,
-        .dir = NONE,
-        .player_state = PLAYING,
-        .score = 0,
-        .key_up = 'w',
-        .key_down = 's',
-        .key_left = 'a',
-        .key_right = 'd',
-        .color_code = 32};
+    struct Player player1 = {.head_x = board_cols / 3,
+                             .head_y = board_rows / 2,
+                             .tail_x = 0,
+                             .tail_y = 0,
+                             .body = NULL,
+                             .body_length = 4,
+                             .dir = NONE,
+                             .player_state = PLAYING,
+                             .score = 0,
+                             .key_up = 'w',
+                             .key_down = 's',
+                             .key_left = 'a',
+                             .key_right = 'd',
+                             .color_code = 32};
 
-    struct Player player2 = {
-        .head_x = board_cols / 3 * 2,
-        .head_y = board_rows / 2,
-        .tail_x = 0,
-        .tail_y = 0,
-        .body = NULL,
-        .body_length = 4,
-        .dir = NONE,
-        .player_state = PLAYING,
-        .score = 0,
-        .key_up = 'i',
-        .key_down = 'k',
-        .key_left = 'j',
-        .key_right = 'l',
-        .color_code = 92};
+    struct Player player2 = {.head_x = board_cols / 3 * 2,
+                             .head_y = board_rows / 2,
+                             .tail_x = 0,
+                             .tail_y = 0,
+                             .body = NULL,
+                             .body_length = 4,
+                             .dir = NONE,
+                             .player_state = PLAYING,
+                             .score = 0,
+                             .key_up = 'i',
+                             .key_down = 'k',
+                             .key_left = 'j',
+                             .key_right = 'l',
+                             .color_code = 92};
 
     initialize_body(&player1);
 
@@ -93,15 +91,17 @@ int run_game() {
         // check if the first player crashed into himself
         check_self_collision(&player1);
 
-        // check if the second player crashed into himself or if either player has crashed into an opposing player
+        // check if the second player crashed into himself or if either player has crashed into an
+        // opposing player
         if (player2.player_state != NOT_PLAYING) {
             check_self_collision(&player2);
             check_snakes_collision(&player1, &player2);
             check_snakes_collision(&player2, &player1);
         }
 
-        if (player1.player_state == DEAD && player2.player_state == DEAD) { // if 2 players were playing
-            if (player1.score != player2.score) {                           // one player has bigger score
+        if (player1.player_state == DEAD &&
+            player2.player_state == DEAD) {       // if 2 players were playing
+            if (player1.score != player2.score) { // one player has bigger score
                 printf("Player %s has won!\n", (player1.score > player2.score ? "1" : "2"));
             } else { // players have same score
                 printf("Both players got the same score!\n");
@@ -109,9 +109,17 @@ int run_game() {
 
             // print scores
             printf("\nPlayer 1: %d\nPlayer 2: %d\n", player1.score, player2.score);
+
+            // free players bodies
+            free_body(&player1);
+            free_body(&player2);
             break;
-        } else if (player1.player_state == DEAD && player2.player_state == NOT_PLAYING) { // if 1 player was playing
+        } else if (player1.player_state == DEAD &&
+                   player2.player_state == NOT_PLAYING) { // if 1 player was playing
             printf("You have lost!\nYour score: %d\n", player1.score);
+
+            // free player's body
+            free_body(&player1);
             break;
         }
 

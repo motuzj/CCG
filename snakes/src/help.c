@@ -1,10 +1,6 @@
 #include <stdio.h>
 
 int welcome_message() {
-    // game name
-    // char ascii_name[300] = "  SSSS   NN  NN   AAAA   KK  KK  EEEEEE   SSSS  \n SS      NNN NN  AA  AA  KK KK   EE      SS     \n  SSSS   NN NNN  AAAAAA  KKKK    EEEE     SSSS  \n     SS  NN  NN  AA  AA  KK KK   EE          SS \n  SSSS   NN  NN  AA  AA  KK  KK  EEEEEE   SSSS";
-    // printf("\033[32m%s\033[0m\n\n", ascii_name);
-
     printf("\033[4mVISUALS\033[0m\n");
     printf("Player 1\t\033[32moooooooooO\033[0m\n"); // Player 1        oooooooooO
     printf("Player 2\t\033[92moooooooooO\033[0m\n"); // Player 2        oooooooooO

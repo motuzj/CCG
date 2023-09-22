@@ -11,6 +11,13 @@
  */
 int initialize_body(struct Player *player);
 /*
+ * Function: free_body
+ * Description: Frees player's body.
+ * Arguments:
+ *   player - Pointer to the player.
+ */
+int free_body(struct Player *player);
+/*
  * Function: change_controls
  * Description: Initialize player's body.
  * Arguments:
