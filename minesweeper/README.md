@@ -4,14 +4,16 @@
 
 ## Controls
 
-Use the arrow keys to move the cursor around the game board. Press `g` to guess and `f` to flag a mine. For a complete list of available controls, press `?` or `h`.
+Use the arrow keys to move the cursor around the game board. Press `SPACE` or `g` to guess and `f` to flag a mine. For a complete list of available controls, see [Help](#help).
 
 ## Options
 
-- `-s <seed>`: Set a speciffic seed. See [Seed](#seed) section for more details.
+- `-r <num>`: Set number of rows.
+- `-c <num>`: Set number of columns.
+- `-s <seed>`: Set a specific seed. See [Seed](#seed) section for more details.
 - `-m`: Minimalist mode - hide all text messages, errors, warnings, status and display only board.
-- `-w`: Set board width.
-- `-h`: Set board height.
+- `-n`: Disables colors.
+- `-h`: Display help message.
 
 ## Seed
 
@@ -19,10 +21,10 @@ Seed consist of following parts:
 
 Example of seed: `10x10n13c7x12#648B1415`
 
-* `10x10`: width and height.
-* `n13`: number of mines.
-* `c7x12`: cursor coordinates (x, y).
-* `648B1415`: random hexadecimal number used to generate board.
+* `10x10`: Width and height.
+* `n13`: Number of mines.
+* `c7x12`: Cursor coordinates (x, y).
+* `648B1415`: Random hexadecimal number used to generate board.
 
 To obtain the seed during gameplay, press s.
 
@@ -34,7 +36,7 @@ The easiest way to build the game is with `make`. To get started, follow the ins
 
 ## Help
 
-You can press `?` to show message like this:
+You can press `?` in-game to show message like this:
 
 ```
 CONTROLS:

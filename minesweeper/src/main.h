@@ -17,6 +17,7 @@ extern char message[];    // message that will be printed during draw()
 
 extern bool custom_seed; // true if custom seed is provided
 extern bool minimal;     // minimal option (no text, only gameboard)
+extern bool colors;      // if true gameboard will be printed in colors
 
 typedef enum {
     CELL_BLANK = 0,

@@ -21,20 +21,24 @@ char message[120] = "";
 // options
 bool custom_seed = false;
 bool minimal = false;
+bool colors = true;
 
 Cell **board;
 State gameState = PLAYING;
 
 int main(int argc, char *argv[]) {
     int opt;
-    while ((opt = getopt(argc, argv, "s:mr:c:h")) != -1) {
+    while ((opt = getopt(argc, argv, "s:mnr:c:h")) != -1) {
         switch (opt) {
-            case 's':
+            case 's': // custom seed
                 custom_seed = true;
                 if (arg_set_seed(optarg)) return 1;
                 break;
-            case 'm':
+            case 'm': // minimal mode
                 minimal = true;
+                break;
+            case 'n':
+                colors = false;
                 break;
             case 'c': // width
                 if (!custom_seed) w = atoi(optarg);
@@ -42,8 +46,8 @@ int main(int argc, char *argv[]) {
             case 'r': // height
                 if (!custom_seed) h = atoi(optarg);
                 break;
-            case 'h':
-                printf("Usage: %s [OPTION]...\n\n -r \033[3m<num>\033[0m\tNumber of rows\n -c \033[3m<num>\033[0m\tNumber of columns\n -s \033[3m<str>\033[0m\tSet a seed in alphanumerical format with '#', eg. 10x10n13c0x0#65A1549F\n -m\t\tEnables minimal mode (everything except game board is hidden)\n -h\t\tPrints this help message and exit\n", argv[0]);
+            case 'h': // help
+                printf("Usage: %s [OPTION]...\n\n -r \033[3m<num>\033[0m\tNumber of rows\n -c \033[3m<num>\033[0m\tNumber of columns\n -s \033[3m<str>\033[0m\tSet a seed in alphanumerical format with '#', eg. 10x10n13c0x0#65A1549F\n -m\t\tEnables minimal mode (everything except game board is hidden)\n -n\t\tDisables colors\n -h\t\tPrints this help message and exit\n", argv[0]);
                 exit(EXIT_SUCCESS);
         }
     }

@@ -29,12 +29,17 @@ int draw() {
     for (int i = 0; i < h; i++) {
         printf("│ ");
         for (int j = 0; j < w; j++) {
-            if (i == cursor_y && j == cursor_x && (board[i][j] == CELL_BLANK_HIDDEN || board[i][j] == CELL_MINE_HIDDEN)) {
-                printf("\033[42m\033[30m");
-            } else if (board[i][j] == CELL_BLANK_HIDDEN || board[i][j] == CELL_MINE_HIDDEN) {
-                printf("\033[47m\033[30m");
+            if (colors) {
+                if (i == cursor_y && j == cursor_x && (board[i][j] == CELL_BLANK_HIDDEN || board[i][j] == CELL_MINE_HIDDEN)) {
+                    printf("\033[42m\033[30m");
+                } else if (board[i][j] == CELL_BLANK_HIDDEN || board[i][j] == CELL_MINE_HIDDEN) {
+                    printf("\033[47m\033[30m");
+                } else if (i == cursor_y && j == cursor_x) {
+                    printf("\033[42m");
+                }
             } else if (i == cursor_y && j == cursor_x) {
-                printf("\033[42m");
+                printf("# ");
+                continue;
             }
             switch (board[i][j]) {
                 case CELL_BLANK: {
@@ -49,10 +54,10 @@ int draw() {
                 }
                 case CELL_FLAGGED:
                 case CELL_FLAGGED_MINE:
-                    printf("\033[35mX");
+                    printf("%sX", colors ? "\033[35m" : "");
                     break;
                 case CELL_MINE:
-                    printf("\033[91m#");
+                    printf("%s#", colors ? "\033[91m" : "");
                     break;
                 case CELL_BLANK_HIDDEN:
                 case CELL_MINE_HIDDEN:
