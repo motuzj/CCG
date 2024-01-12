@@ -2,6 +2,7 @@
 #define DRAW_H
 
 #include "main.h"
-int draw(int w, int h, Cell **board);
+
+int draw(void);
 
 #endif

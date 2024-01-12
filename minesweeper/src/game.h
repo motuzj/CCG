@@ -4,10 +4,10 @@
 #include "main.h"
 
 int arg_set_seed(char arg[]);
-int generate_board(int guessX, int guessY, int w, int h);
-int reveal_empty_cells(int x, int y);
-int count_mines(Cell **board, int x, int y, int w, int h);
-int count_cells_with_state(Cell **board, Cell state, int w, int h);
-int run_game();
+void generate_board(int guess_x, int guess_y);
+void reveal_empty_cells(int x, int y);
+int count_nearby_mines(int x, int y);
+int count_cells_with_state(Cell state);
+int run_game(void);
 
 #endif
