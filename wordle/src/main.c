@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
             case 'h':
                 printf("Usage: wordle [OPTION]...\n\n"
                        " -d \033[3m<path>\033[0m\tSpecify the path to a custom dictionary file.\n"
-                       " -w \033[3m<str>\033[0m\tChoose manually a word to guess\n"
+                       " -w \033[3m<str>\033[0m\tChoose manually a word to guess.\n"
                        " -e\t\tEnable endless guesses mode.\n"
                        " -k\t\tDisable keyboard display.\n"
                        " -h\t\tDisplay help message.\n");

@@ -11,6 +11,7 @@ Read more on [Wikipedia](https://en.wikipedia.org/wiki/Wordle).
 ## Options
 
 - `-d <dictionary-path>`: Specify the path to a custom dictionary file.
+- `-w <word>`: Choose manually a word to guess.
 - `-e`: Enable endless guesses mode.
 - `-k`: Disable keyboard display.
 - `-h`: Display help message.
