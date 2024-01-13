@@ -9,26 +9,23 @@
 #include "dict.h"
 #include "main.h"
 
-int display_keyboard() {
-    if (disable_keyboard) {
-        return 0;
-    }
+void display_keyboard() {
     for (int i = 0; i < strlen(keys_us); i++) {
         char ch = keys_us[i];
 
         // check if the character exists
-        int in_correct_letters = char_exists(ch, correct_letters);
-        int in_present_letters = char_exists(ch, present_letters);
-        int in_absent_letters = char_exists(ch, absent_letters);
+        bool in_correct_letters = char_exists(ch, correct_letters);
+        bool in_present_letters = char_exists(ch, present_letters);
+        bool in_absent_letters = char_exists(ch, absent_letters);
 
         if (in_correct_letters) {
-            printf("\033[0;42m%c\033[0m ", ch); // green
+            printf("\033[42m%c\033[0m ", ch); // green
         } else if (in_present_letters) {
-            printf("\033[0;43m%c\033[0m ", ch); // yellow
+            printf("\033[43m%c\033[0m ", ch); // yellow
         } else if (in_absent_letters) {
-            printf("\033[0;90m%c\033[0m ", ch); // grey
+            printf("\033[90m%c\033[0m ", ch); // grey
         } else {
-            printf("\033[0;100m%c\033[0m ", ch); // without color
+            printf("\033[100m%c\033[0m ", ch); // without color
         }
 
         // print newline after few characters
@@ -36,7 +33,6 @@ int display_keyboard() {
             printf("\n");
         }
     }
-    return 0;
 }
 
 int check_guess(char *guess, char *secret_word) {
@@ -44,7 +40,7 @@ int check_guess(char *guess, char *secret_word) {
     if (!strcmp(secret_word, guess)) {
         printf("┃");
         for (int i = 0; i < WORD_LENGTH; i++) {
-            printf("\033[0;32m%c\033[0m┃", toupper(guess[i])); // print letter in green
+            printf("\033[32m%c\033[0m┃", toupper(guess[i])); // print letter in green
         }
         printf("\n┗━┻━┻━┻━┻━┛\n");
         printf("You have won!\n");
@@ -75,7 +71,7 @@ int check_guess(char *guess, char *secret_word) {
     for (int i = 0; i < WORD_LENGTH; i++) {
         // check if the letter in the guess is in the correct position in secret word
         if (guess[i] == temp_secret_word[i]) {
-            printf("\033[0;32m%c\033[0m┃", guess[i]); // print letter in green
+            printf("\033[32m%c\033[0m┃", guess[i]); // print letter in green
             copy_char_to_array(guess[i], correct_letters);
             continue;
         }
@@ -107,7 +103,7 @@ int check_guess(char *guess, char *secret_word) {
         if (previous_same_letters < secret_word_same_letters &&
             correct_same_letters < secret_word_same_letters &&
             strchr(temp_secret_word, guess[i]) != NULL) {
-            printf("\033[0;33m%c\033[0m┃", guess[i]); // print letter in yellow
+            printf("\033[33m%c\033[0m┃", guess[i]); // print letter in yellow
             copy_char_to_array(guess[i], present_letters);
         } else {
             printf("%c┃", guess[i]); // print letter without color
@@ -115,7 +111,7 @@ int check_guess(char *guess, char *secret_word) {
         }
     }
     printf("\n┣━╋━╋━╋━╋━┫\n\n");
-    display_keyboard();
+    if (!disable_keyboard) display_keyboard();
     printf("\n");
     return 0;
 }

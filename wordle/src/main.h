@@ -7,7 +7,7 @@
 extern const char keys_us[];
 extern char correct_letters[27]; // letters correctly guessed and at the correct position - green
 extern char present_letters[27]; // letters correctly guessed, but at the wrong position - yellow
-extern char absent_letters[255]; // guessed letters that are not it the secret word - grey
+extern char absent_letters[27]; // guessed letters that are not it the secret word - grey
 extern char *dictionary_path;
 
 // options

@@ -2,11 +2,6 @@
 #define GAME_H
 
 /*
- * Function: display_keyboard
- * Description: Displays keyboard with keys marked by colors
- */
-int display_keyboard();
-/*
  * Function: check_guess
  * Description: Compares the user's guess with the correct word and prints feedback.
  * Arguments:

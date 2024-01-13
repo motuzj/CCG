@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -77,21 +78,21 @@ int is_word_in_dict(const char *word, const char *dict) {
     return 0;
 }
 
-int char_exists(char ch, char arr[]) {
+bool char_exists(char ch, char arr[]) {
     for (int i = 0; i < strlen(arr); i++) {
         if (arr[i] == ch) {
-            return 1;
+            return true;
         }
     }
-    return 0;
+    return false;
 }
 
-int copy_char_to_array(char ch, char *array) {
+bool copy_char_to_array(char ch, char *array) {
     if (char_exists(ch, array)) {
-        return 1;
+        return false;
     }
     int length = strlen(array);
     array[length] = ch;
     array[length + 1] = '\0';
-    return 0;
+    return true;
 }

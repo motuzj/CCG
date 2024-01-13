@@ -13,7 +13,7 @@
 const char keys_us[] = "QWERTYUIOPASDFGHJKLZXCVBNM";
 char correct_letters[27];
 char present_letters[27];
-char absent_letters[255];
+char absent_letters[27];
 char *dictionary_path;
 
 // options
@@ -43,7 +43,6 @@ int main(int argc, char *argv[]) {
                        " -k\t\t\tDisable keyboard display.\n"
                        " -h\t\t\tDisplay help message.\n");
                 return 0;
-                break;
             }
         }
     }
