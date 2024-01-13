@@ -15,35 +15,41 @@ char correct_letters[27];
 char present_letters[27];
 char absent_letters[27];
 char *dictionary_path;
+bool custom_secret_word = false;
 
 // options
 bool endless_guesses = false;
 bool disable_keyboard = false;
 
 int main(int argc, char *argv[]) {
+    char *secret_word = NULL;
     int opt;
-    while ((opt = getopt(argc, argv, "d:ekh")) != -1) {
+
+    while ((opt = getopt(argc, argv, "d:w:ekh")) != -1) {
         switch (opt) {
-            case 'd': {
+            case 'd':
                 dictionary_path = optarg;
                 break;
-            }
-            case 'e': {
+            case 'w':
+                if (strlen(optarg) == 5) {
+                    custom_secret_word = true;
+                    secret_word = optarg;
+                }
+                break;
+            case 'e':
                 endless_guesses = true;
                 break;
-            }
-            case 'k': {
+            case 'k':
                 disable_keyboard = true;
                 break;
-            }
-            case 'h': {
+            case 'h':
                 printf("Usage: wordle [OPTION]...\n\n"
-                       " -d <dictionary-path>\tSpecify the path to a custom dictionary file.\n"
-                       " -e\t\t\tEnable endless guesses mode.\n"
-                       " -k\t\t\tDisable keyboard display.\n"
-                       " -h\t\t\tDisplay help message.\n");
+                       " -d \033[3m<path>\033[0m\tSpecify the path to a custom dictionary file.\n"
+                       " -w \033[3m<str>\033[0m\tChoose manually a word to guess\n"
+                       " -e\t\tEnable endless guesses mode.\n"
+                       " -k\t\tDisable keyboard display.\n"
+                       " -h\t\tDisplay help message.\n");
                 return 0;
-            }
         }
     }
 
@@ -51,9 +57,10 @@ int main(int argc, char *argv[]) {
         dictionary_path = "dict/english.txt";
     }
 
-    char *secret_word;
-    if ((secret_word = get_word(dictionary_path)) == NULL) {
-        return 1;
+    if (secret_word == NULL) {
+        if ((secret_word = get_word(dictionary_path)) == NULL) {
+            return 1;
+        }
     }
 
     int loops_count = 0;
@@ -91,6 +98,6 @@ int main(int argc, char *argv[]) {
         printf("\n┗━┻━┻━┻━┻━┛\n");
         printf("You failed to guess the word '%s'\n", secret_word);
     }
-    free(secret_word);
+    if (!custom_secret_word) free(secret_word);
     return 0;
 }
