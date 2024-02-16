@@ -2,12 +2,87 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
+#include <stdbool.h>
+#include <ctype.h>
 
 #include "extern/cJSON/cJSON.h"
 #include "network.h"
 #include "extern/b64.c/b64.h"
+#include "main.h"
 
-#define decode(x) b64_decode(x->valuestring, strlen(x->valuestring))
+// default
+Arguments args = {
+    .amount = 10,
+    .category = 0,
+    .difficulty = "",
+    .type = "multiple",
+    .formatting = false
+};
+
+int process_args(int argc, char *const argv[]) {
+    int opt = 0;
+    while ((opt = getopt(argc, argv, "n:c:d:t:f")) != -1) {
+        switch (opt) {
+            case 'n':
+                if (!isdigit(*optarg)) {
+                    fprintf(stderr, "Error: The argument for the number of questions must be a valid number.\n");
+                    exit(EXIT_FAILURE);
+                }
+                int n = atoi(optarg);
+                if (n <= 0 || n > 50) {
+                    fprintf(stderr, "Error: Number of questions can't be smaller than 1 and bigger than 50.\n");
+                    exit(EXIT_FAILURE);
+                }
+                args.amount = n;
+                break;
+            case 'c':
+                if (!isdigit(*optarg)) {
+                    fprintf(stderr, "Error: The argument for the ID of category must be a valid number.\n");
+                    exit(EXIT_FAILURE);
+                }
+                int c = atoi(optarg);
+                if (c <= 0 || c > 50) {
+                    fprintf(stderr, "Error: Category ID must be 0 - 63.\n");
+                    exit(EXIT_FAILURE);
+                }
+                args.category = c;
+                break;
+            case 'd':
+                printf("TODO\n");
+                break;
+            case 't':
+                printf("TODO\n");
+                break;
+            case 'f':
+                printf("TODO\n");
+                break;
+        }
+    }
+    return 0;
+}
+
+char *create_url() {
+    char *url = (char *)malloc(255 * sizeof(char));
+
+    char category_str[14] = "";
+    if (args.category != 0) {
+        sprintf(category_str, "&category=%d", args.category);
+    }
+
+    char difficulty_str[19] = "";
+    if (strlen(args.difficulty) != 0) {
+        sprintf(difficulty_str, "&difficulty=%s", args.difficulty);
+    }
+
+    char type_str[15] = "";
+    if (strlen(args.type) != 0) {
+        sprintf(type_str, "&type=%s", args.type);
+    }
+
+    sprintf(url, "https://opentdb.com/api.php?amount=%d%s%s%s&encode=base64", args.amount, category_str, difficulty_str, type_str);
+    return url;
+}
 
 int process_json(cJSON *json) {
     cJSON *results = cJSON_GetObjectItemCaseSensitive(json, "results");
@@ -64,11 +139,15 @@ int process_json(cJSON *json) {
     return 0;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     srand(time(NULL));
 
-    // load json
-    char *json_data = get_json("https://opentdb.com/api.php?amount=10&type=multiple&encode=base64");
+    process_args(argc, argv);
+
+    // load json from url
+    
+    char *url = create_url();
+    char *json_data = get_json(url);
     
     // parse json
     cJSON *json = cJSON_Parse(json_data);
@@ -81,8 +160,9 @@ int main() {
         return 1;
     }
 
-    process_json(json);
+    if (process_json(json)) return 1;
     
     cJSON_Delete(json);
+    free(url);
     return 0;
 }
