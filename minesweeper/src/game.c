@@ -11,9 +11,10 @@
 #include "main.h"
 
 #define CLEAR_SCREEN "\033[1;1H\033[2J"
+#define ENTER_ALTERNATE_SCREEN "\033[?1049h"
+#define EXIT_ALTERNATE_SCREEN "\033[?1049l"
 
 static double minesPercentage = 0.13; // percentage of mines
-
 
 // set seed from from arguments
 int arg_set_seed(char arg[]) {
@@ -194,6 +195,9 @@ static void free_board() {
 }
 
 int run_game() {
+    printf(ENTER_ALTERNATE_SCREEN);
+    printf(CLEAR_SCREEN);
+
     if (initialize_board()) return 1;
 
     if (custom_seed) command_guess(cursor_x, cursor_y);
@@ -250,12 +254,10 @@ int run_game() {
                 cursor_y = 0; // reset cursor y coord
 
                 if (initialize_board()) return 1;
-            } else {
-                printf("Bye!");
             }
         }
     }
     free_board();
-    printf("\n");
+    printf(EXIT_ALTERNATE_SCREEN);
     return 0;
 }

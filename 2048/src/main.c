@@ -6,6 +6,10 @@
 #include "draw.h"
 #include "game.h"
 
+#define CLEAR_SCREEN "\033[1;1H\033[2J"
+#define ENTER_ALTERNATE_SCREEN "\033[?1049h"
+#define EXIT_ALTERNATE_SCREEN "\033[?1049l"
+
 // GLOBAL VARIABLES/OPTIONS
 unsigned long score = 0; // score counter
 bool minimal = false;
@@ -35,6 +39,9 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+
+    printf(ENTER_ALTERNATE_SCREEN);
+    printf(CLEAR_SCREEN);
 
     if (initialize_board(&board, side_size)) {
         return 1;
@@ -66,14 +73,15 @@ int main(int argc, char *argv[]) {
         }
 
         if (is_game_over(board, side_size)) {
-            printf("No empty space left. GAME OVER!\n");
+            printf("No empty space left. GAME OVER!\n\nPress [ENTER] to exit.\n");
+            getchar();
             break;
         }
 
         while (!process_input(getch(), board, side_size)) {
         }
     }
-    printf("\n");
+    printf(EXIT_ALTERNATE_SCREEN);
     free_board(board, side_size);
     return 0;
 }

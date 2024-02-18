@@ -65,6 +65,7 @@ int main(int argc, char *argv[]) {
 
     int loops_count = 0;
 
+    printf(ENTER_ALTERNATE_SCREEN);
     printf(CLEAR_SCREEN);
     printf("┏━┳━┳━┳━┳━┓\n\n");
 
@@ -96,7 +97,10 @@ int main(int argc, char *argv[]) {
         printf("\033[%d;1H\033[J", loops_count * 2 + 2);
         printf("┃G┃A┃M┃E┃ ┃\n┃ ┃O┃V┃E┃R┃");
         printf("\n┗━┻━┻━┻━┻━┛\n");
-        printf("You failed to guess the word '%s'\n", secret_word);
+        printf("You failed to guess the word '%s'\n\nPress [ENTER] to exit.\n", secret_word);
+        getchar();
+        getchar(); // idk why i need two getchars
+        printf(EXIT_ALTERNATE_SCREEN);
     }
     if (!custom_secret_word) free(secret_word);
     return 0;

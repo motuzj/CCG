@@ -2,7 +2,10 @@
 #define MAIN_H
 
 #define WORD_LENGTH 5
+
 #define CLEAR_SCREEN "\033[1;1H\033[2J"
+#define ENTER_ALTERNATE_SCREEN "\033[?1049h"
+#define EXIT_ALTERNATE_SCREEN "\033[?1049l"
 
 extern const char keys_us[];
 extern char correct_letters[27]; // letters correctly guessed and at the correct position - green

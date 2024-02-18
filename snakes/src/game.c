@@ -8,7 +8,13 @@
 #include "main.h"
 #include "player.h"
 
+#define CLEAR_SCREEN "\033[1;1H\033[2J"
+#define ENTER_ALTERNATE_SCREEN "\033[?1049h"
+#define EXIT_ALTERNATE_SCREEN "\033[?1049l"
+
 int run_game() {
+    printf(ENTER_ALTERNATE_SCREEN);
+    printf(CLEAR_SCREEN);
     welcome_message();
 
     // fruits initialization
@@ -100,7 +106,8 @@ int run_game() {
         }
 
         if (player1.player_state == DEAD &&
-            player2.player_state == DEAD) {       // if 2 players were playing
+            player2.player_state == DEAD) {       // if two players were playing
+            printf(EXIT_ALTERNATE_SCREEN);
             if (player1.score != player2.score) { // one player has bigger score
                 printf("Player %s has won!\n", (player1.score > player2.score ? "1" : "2"));
             } else { // players have same score
@@ -108,14 +115,15 @@ int run_game() {
             }
 
             // print scores
-            printf("\nPlayer 1: %d\nPlayer 2: %d\n", player1.score, player2.score);
+            printf("\nSCORES\nPlayer 1: %d\nPlayer 2: %d\n", player1.score, player2.score);
 
             // free players bodies
             free_body(&player1);
             free_body(&player2);
             break;
         } else if (player1.player_state == DEAD &&
-                   player2.player_state == NOT_PLAYING) { // if 1 player was playing
+                   player2.player_state == NOT_PLAYING) { // if only one player was playing
+            printf(EXIT_ALTERNATE_SCREEN);
             printf("You have lost!\nYour score: %d\n", player1.score);
 
             // free player's body

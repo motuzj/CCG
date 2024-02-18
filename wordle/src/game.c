@@ -43,7 +43,10 @@ int check_guess(char *guess, char *secret_word) {
             printf("\033[32m%c\033[0m┃", toupper(guess[i])); // print letter in green
         }
         printf("\n┗━┻━┻━┻━┻━┛\n");
-        printf("You have won!\n");
+        printf("You have won!\nPress [ENTER] to exit.\n");
+        getchar();
+        getchar(); // idk why i need two getchars
+        printf(EXIT_ALTERNATE_SCREEN);
         return 1;
     }
 
@@ -76,8 +79,8 @@ int check_guess(char *guess, char *secret_word) {
             continue;
         }
 
-        // this part seems too complicated, but I wanted the word checking to be the same as in the
-        // original/NY Times version of the game. to understand this code you need
+        // This part seems too complicated, but I wanted the word checking to be the same as in the
+        // original/NY Times version of the game.
 
         // number of letters in the correct position
         int correct_same_letters = 0;
