@@ -12,7 +12,7 @@ int print_help() {
 	printf("  -d STRING\tSet the difficulty of questions (easy / e, medium / m, hard / h)\n");
 	printf("  -t STRING\tSet the type of questions (multiple / m, boolean / b)\n");
 	printf("  -l\t\tList avaible categories\n");
-	printf("  -t\t\tDisable all escape sequences\n");
+	printf("  -f\t\tDisable all escape sequences\n");
 	printf("  -h\t\tShow this help message and exit\n");
 	return 0;
 }
