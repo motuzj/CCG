@@ -1,14 +1,20 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define decode(x) b64_decode(x->valuestring, strlen(x->valuestring))
+#define FORMAT_RESET "\033[0m"
+#define FORMAT_BOLD "\033[1m"
+#define FORMAT_UNDERLINE "\033[4m"
+#define FORMAT_CORRECT "\033[32m"
+#define FORMAT_WRONG "\033[31m"
+
+#define DECODE(X) b64_decode(X->valuestring, strlen(X->valuestring))
 #define uint8_t unsigned char
 
 typedef struct Arguments{
     uint8_t amount; // number of questions
-    uint8_t category; // id of categories, 0 is all categories
-    char difficulty[7]; // difficulty of questions - easy / medium / hard, 0 is all difficulties
-    char type[9]; // type of question - multiple / boolean, 0 is all types
+    uint8_t category; // id of category, 0 is all categories
+    char *difficulty; // difficulty of questions - easy / medium / hard, 0 is all difficulties
+    char *type; // type of question - multiple / boolean, 0 is all types
     bool formatting; // use formatting / colors
 } Arguments;
 
@@ -24,8 +30,6 @@ typedef struct Question{
     bool correctly_answered; // true if user answered question correctly, default is false
 } Question;
 
-#define init_question(x) Question x = { .index = 0, .type = NULL, .difficulty = NULL, .category = NULL, .question_text = NULL, .answers = NULL, .answers_amount = 0, .corr_answ_index = 0, .correctly_answered = false }
-
-Question *questions;
+#define INIT_QUESTION(X) Question X = { .index = 0, .type = NULL, .difficulty = NULL, .category = NULL, .question_text = NULL, .answers = NULL, .answers_amount = 0, .corr_answ_index = 0, .correctly_answered = false }
 
 #endif
