@@ -13,8 +13,7 @@ typedef enum {
     RATE_LIMIT = 5
 } opentdb_error_enum;
 
-// print question with answers and returns correct answer number (from 0)
-Question opentdb_json_to_struct_question(cJSON *result, bool *err);
+char *opentdb_error_code_to_string(int err_code);
 char *opentdb_create_url(Arguments args);
 int opentdb_process_json(cJSON *json, Question **questions, Arguments args);
 int opentdb_list_categories();

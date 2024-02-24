@@ -12,9 +12,14 @@
 #define OPENTDB_URL_API "https://opentdb.com/api.php"
 #define OPENTDB_URL_CATEGORIES "https://opentdb.com/api_category.php"
 
-char *opentdb_error_text[] = { "No errors detected.", "The API doesn't have enough questions for specified category", "Arguements passed in aren't valid.", " Session Token does not exist.", "Session Token has returned all possible questions for the specified query. Resetting the Token is necessary.", "Too many requests have occurred." };
+static char *opentdb_error_text[] = { "No errors detected.", "The API doesn't have enough questions for specified category", "Arguements passed in aren't valid.", " Session Token does not exist.", "Session Token has returned all possible questions for the specified query. Resetting the Token is necessary.", "Too many requests, please wait at least 5 seconds and try again." };
 
-Question opentdb_json_to_struct_question(cJSON *result, bool *err) {
+char *opentdb_error_code_to_string(int err_code) {
+    return opentdb_error_text[err_code];
+}
+
+// print question with answers and returns correct answer number (from 0)
+static Question opentdb_json_to_struct_question(cJSON *result, bool *err) {
     INIT_QUESTION(new_question);
 
     // write type to Question struct
@@ -109,6 +114,14 @@ char *opentdb_create_url(Arguments args) {
 int opentdb_process_json(cJSON *json, Question **questions, Arguments args) {
     *questions = (Question *)malloc(args.amount * sizeof(Question));
     if (*questions == NULL) {
+        return 1;
+    }
+
+    const cJSON *response_code_cJSON = cJSON_GetObjectItemCaseSensitive(json, "response_code");
+    int response_code = response_code_cJSON->valueint;
+    
+    if (response_code != 0) {
+        fprintf(stderr, "Error: %s\n", opentdb_error_code_to_string(response_code));
         return 1;
     }
 
