@@ -23,7 +23,7 @@ static Question opentdb_json_to_struct_question(cJSON *result, bool *err) {
     INIT_QUESTION(new_question);
 
     // write type to Question struct
-    const cJSON *json_type = cJSON_GetObjectItemCaseSensitive(result, "question");
+    const cJSON *json_type = cJSON_GetObjectItemCaseSensitive(result, "type");
     if (cJSON_IsString(json_type)) {
         new_question.type = (char *)DECODE(json_type);
     } else {
@@ -80,7 +80,21 @@ static Question opentdb_json_to_struct_question(cJSON *result, bool *err) {
         new_question.answers[i] = (char *)DECODE(curr_incor_answer);
     }
 
-    // randomly place correct answer
+    // randomly place correct answer if not bool
+    if (strcmp(new_question.type, "boolean") == 0) {
+        if (strcmp(new_question.answers[0], "True") == 0) {
+            new_question.corr_answ_index = 1;
+            new_question.answers[1] = (char *)DECODE(correct_answer);
+        } else if (strcmp(new_question.answers[0], "False") == 0) {
+            new_question.corr_answ_index = 0;
+            new_question.answers[1] = new_question.answers[0];
+            new_question.answers[0] = (char *)DECODE(correct_answer);
+        } else {
+            fprintf(stderr, "Error: The boolean question is not in correct format.\n");
+        }
+
+        return new_question;
+    }
     const int random = rand() % new_question.answers_amount;
     new_question.corr_answ_index = random;
     new_question.answers[new_question.answers_amount - 1] = new_question.answers[random];
