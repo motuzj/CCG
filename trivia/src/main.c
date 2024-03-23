@@ -58,6 +58,13 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // print stats
+    int correct_answers = 0;
+    for (int i = 0; i < args.amount; i++) {
+        if (questions[i].correctly_answered) correct_answers++;
+    }
+    printf("STATS\n----------\nCorrect answers: %d out of %d (%.2f%%)\n", correct_answers, args.amount, 100.0 / (float)args.amount * (float)correct_answers);
+
     // free questions and answers in them
     for (int i = 0; i < args.amount; i++) {
         for (int j = 0; j < questions[i].answers_amount; j++) {
