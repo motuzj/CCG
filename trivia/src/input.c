@@ -11,8 +11,13 @@ bool check_user_answer(Question question, char user_input) {
 }
 
 char get_input() {
-    char input[2];
+    char input;
     printf("Your answer: ");
-    scanf("%s", input);
-    return input[0];
+    input = getchar();
+
+    // flush stdin
+    int temp;
+    while ((temp = fgetc(stdin)) != '\n' && temp != EOF);
+
+    return input;
 }
