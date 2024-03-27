@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 
     // loop thru every question
     for (int i = 0; i < args.amount; i++) {
-        print_question(questions[i], args);
+        print_question(questions[i], args, i + 1);
 
         const char input = get_input(); // get user input
 
@@ -52,9 +52,9 @@ int main(int argc, char *argv[]) {
 
         // print whether user's answer is correct
         if (questions[i].correctly_answered) {
-            printf("%sCorrect!%s\n\n", args.formatting ? FORMAT_CORRECT : "", args.formatting ? FORMAT_RESET : "");
+            printf("%sCorrect!%s\n\n", args.formatting ? FORMAT_COLOR_GREEN : "", args.formatting ? FORMAT_RESET : "");
         } else {
-            printf("%sWrong, correct answer was: %c) %s%s%s\n\n", args.formatting ? FORMAT_WRONG : "", questions[i].corr_answ_index + 'a', args.formatting ? FORMAT_UNDERLINE : "", questions[i].answers[questions[i].corr_answ_index], args.formatting ? FORMAT_RESET : "");
+            printf("%sWrong, correct answer was: %c) %s%s%s\n\n", args.formatting ? FORMAT_COLOR_RED : "", questions[i].corr_answ_index + 'a', args.formatting ? FORMAT_UNDERLINE : "", questions[i].answers[questions[i].corr_answ_index], args.formatting ? FORMAT_RESET : "");
         }
     }
 

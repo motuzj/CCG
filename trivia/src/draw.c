@@ -17,9 +17,28 @@ int print_help() {
 	return 0;
 }
 
-int print_question(Question question, Arguments args) {
+int print_question(Question question, Arguments args, int question_number) {
+	// print difficulty
+	switch (question.difficulty[0]) {
+		case 'e':
+			printf("%sEASY%s, ", args.formatting ? FORMAT_COLOR_GREEN : "", args.formatting ? FORMAT_RESET : "");
+			break;
+		case 'm':
+			printf("%sMEDIUM%s, ", args.formatting ? FORMAT_COLOR_YELLOW : "", args.formatting ? FORMAT_RESET : "");
+			break;
+		case 'h':
+			printf("%sHARD%s, ", args.formatting ? FORMAT_COLOR_RED : "", args.formatting ? FORMAT_RESET : "");
+			break;
+		default:
+			printf("%s, ", question.difficulty);
+			break;
+	}
+
+	// print category
+	printf("%s\"%s\"%s\n", args.formatting ? FORMAT_ITALIC : "", question.category, args.formatting ? FORMAT_RESET : "");
+
     // print the question
-    printf("Q: %s%s%s\n", args.formatting ? FORMAT_BOLD : "", question.question_text, args.formatting ? FORMAT_RESET : "");
+    printf("%d. Q: %s%s%s\n", question_number, args.formatting ? FORMAT_BOLD : "", question.question_text, args.formatting ? FORMAT_RESET : "");
 
     // print all avaible options (answers)
     for (int i = 0; i < question.answers_amount; i++) {

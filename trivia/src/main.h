@@ -1,11 +1,14 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#define FORMAT_COLOR_GREEN "\033[32m"
+#define FORMAT_COLOR_YELLOW "\033[33m"
+#define FORMAT_COLOR_RED "\033[31m"
+
 #define FORMAT_RESET "\033[0m"
 #define FORMAT_BOLD "\033[1m"
+#define FORMAT_ITALIC "\033[3m"
 #define FORMAT_UNDERLINE "\033[4m"
-#define FORMAT_CORRECT "\033[32m"
-#define FORMAT_WRONG "\033[31m"
 
 #define DECODE(X) b64_decode(X->valuestring, strlen(X->valuestring))
 #define uint8_t unsigned char
