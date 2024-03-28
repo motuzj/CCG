@@ -9,7 +9,7 @@
 #include "opentdb.h"
 #include "main.h"
 
-int process_args(int argc, char *const argv[], Arguments *args) {
+void process_args(int argc, char *const argv[], Arguments *args) {
     char *str = NULL;
     int opt = 0;
     while ((opt = getopt(argc, argv, "fhln:c:d:t:")) != -1) {
@@ -21,7 +21,7 @@ int process_args(int argc, char *const argv[], Arguments *args) {
                 print_help();
                 exit(EXIT_SUCCESS);
             case 'l':
-                opentdb_list_categories();
+                if (opentdb_list_categories()) exit(EXIT_FAILURE);
                 exit(EXIT_SUCCESS);
             case 'n':
                 if (!isdigit(*optarg)) {
@@ -48,7 +48,7 @@ int process_args(int argc, char *const argv[], Arguments *args) {
                 args->category = c;
                 break;
             case 'd':
-                str = strdup(optarg);
+                str = optarg;
                 for(char *p=str; *p; ++p) *p=tolower(*p);
                 if (strcmp(str, "e") == 0) {
                     args->difficulty = "easy";
@@ -59,9 +59,10 @@ int process_args(int argc, char *const argv[], Arguments *args) {
                 } else if (strcmp(str, "easy") == 0 || strcmp(str, "medium") == 0 || strcmp(str, "hard") == 0) {
                     args->difficulty = str;
                 }
+                str = NULL;
                 break;
             case 't':
-                str = strdup(optarg);
+                str = optarg;
                 for(char *p=str; *p; ++p) *p=tolower(*p);
                 if (strcmp(str, "m") == 0) {
                     args->type = "multiple";
@@ -70,8 +71,11 @@ int process_args(int argc, char *const argv[], Arguments *args) {
                 } else if (strcmp(str, "multiple") == 0 || strcmp(str, "boolean") == 0) {
                     args->type = str;
                 }
+                str = NULL;
                 break;
+            default:
+                printf("Use the option -h to display help message with all avaible options.\n");
+                exit(EXIT_FAILURE);
         }
     }
-    return 0;
 }

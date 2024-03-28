@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "extern/b64.c/b64.h"
 #include "extern/cJSON/cJSON.h"
 #include "args.h"
 #include "draw.h"
@@ -12,9 +11,29 @@
 #include "opentdb.h"
 #include "main.h"
 
+static void free_questions(Question *questions, Arguments args) {
+    for (int i = 0; i < args.amount; i++) {
+        for (int j = 0; j < questions[i].answers_amount; j++) {
+            free(questions[i].answers[j]);
+        }
+        free(questions[i].answers);
+        free(questions[i].type);
+        free(questions[i].difficulty);
+        free(questions[i].category);
+        free(questions[i].question_text);
+    }
+    free(questions);
+}
+
 int main(int argc, char *argv[]) {
     // default arguments
-    Arguments args = { .amount = 10, .category = 0, .difficulty = "", .type = "", .formatting = true};
+    Arguments args = {
+        .amount = 10,
+        .category = 0,
+        .difficulty = "",
+        .type = "",
+        .formatting = true
+    };
     Question *questions = NULL; // struct array of questions
 
     srand(time(NULL));
@@ -26,24 +45,25 @@ int main(int argc, char *argv[]) {
     char *json_data = get_string_from_url(url);
     free(url);
     
-    // parse json
+    // parse json into struct 'questions'
     cJSON *json = cJSON_Parse(json_data);
     if (json == NULL) {
         const char *error_ptr = cJSON_GetErrorPtr();
         if (error_ptr != NULL) {
-            printf("Error: %s\n", error_ptr);
+            fprintf(stderr, "Error: %s\n", error_ptr);
         }
         cJSON_Delete(json);
         return 1;
     }
-    if (opentdb_process_json(json, &questions, args)) return 1;
+    if (opentdb_process_json(json, &questions, args)) return EXIT_FAILURE;
     cJSON_Delete(json);
 
     // loop thru every question
     for (int i = 0; i < args.amount; i++) {
         print_question(questions[i], args, i + 1);
 
-        const char input = get_input(); // get user input
+        // get user input
+        const char input = get_input();
 
         // check input with the correct answer
         if (check_user_answer(questions[i], input)) {
@@ -51,26 +71,12 @@ int main(int argc, char *argv[]) {
         }
 
         // print whether user's answer is correct
-        if (questions[i].correctly_answered) {
-            printf("%sCorrect!%s\n\n", args.formatting ? FORMAT_COLOR_GREEN : "", args.formatting ? FORMAT_RESET : "");
-        } else {
-            printf("%sWrong, correct answer was: %c) %s%s%s\n\n", args.formatting ? FORMAT_COLOR_RED : "", questions[i].corr_answ_index + 'a', args.formatting ? FORMAT_UNDERLINE : "", questions[i].answers[questions[i].corr_answ_index], args.formatting ? FORMAT_RESET : "");
-        }
+        print_answer_result(questions[i], args);
     }
 
-    // print stats
-    int correct_answers = 0;
-    for (int i = 0; i < args.amount; i++) {
-        if (questions[i].correctly_answered) correct_answers++;
-    }
-    printf("STATS\n----------\nCorrect answers: %d out of %d (%.2f%%)\n", correct_answers, args.amount, 100.0 / (float)args.amount * (float)correct_answers);
+    print_stats(questions, args);
 
-    // free questions and answers in them
-    for (int i = 0; i < args.amount; i++) {
-        for (int j = 0; j < questions[i].answers_amount; j++) {
-            free(questions[i].answers[j]);
-        }
-    }
-    free(questions);
-    return 0;
+    free_questions(questions, args);
+
+    return EXIT_SUCCESS;
 }

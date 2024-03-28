@@ -3,6 +3,6 @@
 
 #include "main.h"
 
-int process_args(int argc, char *const argv[], Arguments *args);
+void process_args(int argc, char *const argv[], Arguments *args);
 
 #endif

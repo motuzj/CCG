@@ -49,6 +49,10 @@ char *get_string_from_url(const char *url) {
     curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &pagedata);
 
     ret = curl_easy_perform(hnd);
+    if (ret) {
+        fprintf(stderr, "CURL error: %s\n", curl_easy_strerror(ret));
+        exit(EXIT_FAILURE);
+    }
 
     curl_easy_cleanup(hnd);
     curl_global_cleanup();
