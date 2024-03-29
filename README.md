@@ -1,7 +1,7 @@
 # CCG
 ![Logo](./_assets/logo.png)
 
-This is my collection of **CLI C Games**. Currently [minesweeper](./minesweeper/README.md), [wordle](./wordle/README.md), [2048](./2048/README.md) and [snakes](./snakes/README.md) games are available.
+This is my collection of **CLI C Games**. Currently [minesweeper](./minesweeper/README.md), [wordle](./wordle/README.md), [2048](./2048/README.md), [snakes](./snakes/README.md) and [trivia](./trivia/README.md) games are available.
 
 ## Building
 
@@ -13,7 +13,7 @@ For example, on Debian/Ubuntu based systems you can install them using:
 sudo apt update && sudo apt install gcc make
 ```
 
-The building of any game probably will be pretty much the same:
+The building process of any game is pretty much the same ([with the exception of trivia game](./trivia/README.md#building)):
 
 ```bash
 git clone https://github.com/motuzj/CCG.git
