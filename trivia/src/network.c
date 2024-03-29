@@ -22,7 +22,7 @@ static size_t write_to_string(void *ptr, size_t size, size_t nmemb, void *userda
 
     mem->memory = new_mem;
     memcpy(&(mem->memory[mem->size]), ptr, realsize);
-    mem->size = realsize;
+    mem->size += realsize;
     mem->memory[mem->size] = 0;
 
     return realsize;
@@ -41,7 +41,7 @@ char *get_string_from_url(const char *url) {
     hnd = curl_easy_init();
     curl_easy_setopt(hnd, CURLOPT_URL, url);
     curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
-    curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/8.2.1");
+    curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/" LIBCURL_VERSION);
     curl_easy_setopt(hnd, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
     curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
