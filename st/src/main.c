@@ -4,6 +4,7 @@
 #include <sys/ioctl.h>
 #include <time.h>
 
+#include "input.h"
 #include "main.h"
 #include "spaceships.h"
 #include "stars.h"
@@ -20,14 +21,14 @@ int print_ship(Spaceship spaceship) {
     return 0;
 }
 
-int set_ship_texture(Spaceship *spaceship, char texture[][50]) {
+int set_ship_texture(Spaceship *spaceship, const char texture[][50]) {
     for (int i = 0; i < spaceship->texture_lines; i++) {
         strncpy(spaceship->texture[i], texture[i], sizeof(spaceship->texture[i]));
     }
     return 0;
 }
 
-int main() {
+int main(void) {
     srand(time(NULL));
 
     struct winsize ws;
@@ -45,11 +46,11 @@ int main() {
     Spaceship enterprise = {
         .name = "USS Enterprise",
         .is_enemy = false,
-        .texture = enterprise_basic,
         .texture_lines = 5,
         .shields = 1000,
         .column = 2,
-        .row = (rows / 2) - 2};
+        .row = (rows / 2) - 2
+    };
     set_ship_texture(&enterprise, enterprise_basic);
 
     while (1) {
